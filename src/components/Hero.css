@@ -1,96 +1,138 @@
+/* Keyframe for the main content blocks fading in and sliding up ("pop in") */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Keyframe for the image panning effect */
+@keyframes panImage {
+    0% {
+        transform: scale(1.05) translate(0, 0);
+    }
+
+    100% {
+        transform: scale(1.05) translate(-15px, 5px);
+    }
+}
+
+/* Keyframe to reveal the highlight from left to right */
+@keyframes reveal-highlight {
+    from {
+        clip-path: polygon(0 0, 0 0, 0 100%, 0% 100%);
+    }
+
+    to {
+        clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
+    }
+}
+
+/* --- The change is in this rule below --- */
 .hero-section {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  min-height: calc(100vh - 70px);
-  padding: 2rem 5%;
-  max-width: 1200px;
-  margin: 0 auto;
-  gap: 2rem;
-  /* The background-color property has been removed from this rule */
+    display: flex;
+    justify-content: space-between;
+    min-height: calc(100vh - 70px);
+    max-width: 1200px;
+    margin: 0 auto;
+    gap: 2rem;
+    /* --- MODIFIED LINES --- */
+    /* We change 'align-items' from 'center' to 'flex-start' to push content to the top. */
+    align-items: flex-start;
+    /* Then we add top padding to position it nicely. Adjust '15vh' as needed. */
+    padding: 15vh 5% 2rem;
 }
 
 .hero-content {
-  max-width: 550px;
-  text-align: left;
-}
-
-@keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-/* --- NEW ANIMATION FOR THE IMAGE --- */
-@keyframes panImage {
-  0% {
-    transform: scale(1.05) translate(0, 0);
-  }
-  100% {
-    transform: scale(1.05) translate(-15px, 5px);
-  }
+    max-width: 550px;
+    text-align: left;
 }
 
 .hero-title {
-  font-family: var(--font-heading);
-  font-size: 4.2rem;
-  font-weight: 800;
-  line-height: 1.1;
-  margin-bottom: 1.5rem;
-  letter-spacing: -2px;
-  animation: fadeInUp 0.8s ease-out forwards;
+    font-family: var(--font-heading);
+    font-size: 4.2rem;
+    font-weight: 800;
+    line-height: 1.1;
+    margin-bottom: 1.5rem;
+    letter-spacing: -2px;
+    position: relative;
+    color: var(--dark-charcoal);
+    z-index: 1;
+    animation: fadeInUp 0.8s ease-out forwards;
+    opacity: 0;
 }
 
+    .hero-title::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        bottom: -0.15em;
+        z-index: -1;
+        background: linear-gradient( to right, hsla(217, 89%, 61%, 0.15) 50%, hsla(217, 89%, 61%, 0) 100% );
+        animation: reveal-highlight 1.2s cubic-bezier(0.87, 0, 0.13, 1) 0.5s forwards;
+        clip-path: polygon(0 0, 0 0, 0 100%, 0% 100%);
+    }
+
+
 .hero-subtitle {
-  font-size: 1.2rem;
-  color: var(--medium-grey);
-  margin-bottom: 2.5rem;
-  animation: fadeInUp 0.8s ease-out 0.3s forwards;
-  opacity: 0; 
+    font-size: 1.2rem;
+    color: var(--medium-grey);
+    margin-bottom: 2.5rem;
+    animation: fadeInUp 0.8s ease-out 0.3s forwards;
+    opacity: 0;
 }
 
 .hero-content .btn {
-  animation: fadeInUp 0.8s ease-out 0.6s forwards;
-  opacity: 0; 
+    animation: fadeInUp 0.8s ease-out 0.6s forwards;
+    opacity: 0;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
+    .hero-content .btn:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 10px 20px -10px var(--primary-color);
+    }
+
 .hero-image-container {
-  animation: fadeInUp 0.8s ease-out 0.4s forwards;
-  opacity: 0;
-  
-  /* --- NEW MASK TO BLEND THE IMAGE --- */
-  -webkit-mask-image: radial-gradient(circle, black 60%, transparent 90%);
-  mask-image: radial-gradient(circle, black 60%, transparent 90%);
+    animation: fadeInUp 0.8s ease-out 0.4s forwards;
+    opacity: 0;
+    -webkit-mask-image: radial-gradient(circle, black 60%, transparent 90%);
+    mask-image: radial-gradient(circle, black 60%, transparent 90%);
 }
 
 .hero-image {
-  max-width: 500px;
-  width: 100%;
-  
-  /* --- APPLY THE NEW PANNING ANIMATION --- */
-  animation: panImage 15s ease-in-out infinite alternate;
+    max-width: 500px;
+    width: 100%;
+    animation: panImage 15s ease-in-out infinite alternate;
 }
 
+/* Media query for responsive adjustments */
 @media (max-width: 992px) {
-  .hero-section {
-    flex-direction: column;
-    text-align: center;
-    padding-top: 60px;
-  }
-  .hero-content {
-    text-align: center;
-    max-width: 700px;
-  }
-  .hero-title {
-    font-size: 3rem;
-  }
-  .hero-image-container {
-    -webkit-mask-image: radial-gradient(circle, black 70%, transparent 95%);
-    mask-image: radial-gradient(circle, black 70%, transparent 95%);
-  }
+    .hero-section {
+        flex-direction: column;
+        text-align: center;
+        /* Adjust padding for mobile to be closer to the top */
+        padding-top: 60px;
+    }
+
+    .hero-content {
+        text-align: center;
+        max-width: 700px;
+    }
+
+    .hero-title {
+        font-size: 3rem;
+    }
+
+    .hero-image-container {
+        -webkit-mask-image: radial-gradient(circle, black 70%, transparent 95%);
+        mask-image: radial-gradient(circle, black 70%, transparent 95%);
+    }
 }

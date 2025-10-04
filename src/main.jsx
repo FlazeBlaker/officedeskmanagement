@@ -1,16 +1,16 @@
-// src/main.jsx
-
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
-import { BrowserRouter } from 'react-router-dom'; // <-- 1. Make sure this import exists
+import { BrowserRouter } from 'react-router-dom';
 import './index.css';
 import App from './App.jsx';
+import { AuthProvider } from './context/AuthContext';
 
 createRoot(document.getElementById('root')).render(
-  <StrictMode>
-    {/* 2. This wrapper makes routing work for your whole app */}
-    <BrowserRouter>
-      <App />
-    </BrowserRouter>
-  </StrictMode>,
+    <StrictMode>
+        <BrowserRouter>
+            <AuthProvider>
+                <App />
+            </AuthProvider>
+        </BrowserRouter>
+    </StrictMode>,
 );
