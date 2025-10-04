@@ -30,27 +30,27 @@
   padding: 2.5rem;
   border-radius: var(--border-radius);
   border: 1px solid var(--border-color);
-  box-shadow: var(--box-shadow);
-  text-align: center;
-  transition: border-color 0.3s ease;
+  box-shadow: none; /* Softer shadow on hover */
+  text-align: left;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease;
   height: 100%;
+  border-top: 4px solid var(--border-color); /* Subtle top border */
 }
 
 .feature-card:hover {
   border-color: var(--primary-color);
+  border-top-color: var(--primary-color);
+  box-shadow: var(--box-shadow);
+  transform: translateY(-5px);
 }
 
 .feature-icon {
   color: var(--primary-color);
   margin-bottom: 1.5rem;
-  transition: transform 0.3s ease;
-}
-
-.feature-card:hover .feature-icon {
-  transform: scale(1.1);
 }
 
 .feature-title {
+  font-family: var(--font-heading);
   font-size: 1.5rem;
   margin-bottom: 1rem;
 }
