@@ -13,7 +13,7 @@ function HomePage() {
         <Features />
         <Pricing />
       </main>
-      <Footer />
+      {/* <Footer /> */}
     </>
   );
 }
