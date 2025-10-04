@@ -1,0 +1,310 @@
+.contact-page {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 5%;
+}
+
+/* --- HEADER --- */
+.contact-header {
+  text-align: center;
+  padding: 120px 0 80px;
+  position: relative;
+}
+
+@keyframes shimmer-text {
+  to { background-position: -200% center; }
+}
+
+.contact-title {
+  font-family: var(--font-heading);
+  font-size: 5rem;
+  font-weight: 800;
+  letter-spacing: -2px;
+  margin: 0;
+  background: linear-gradient(110deg, var(--primary-color), var(--dark-charcoal), var(--primary-color));
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: shimmer-text 8s linear infinite;
+}
+
+.contact-subtitle {
+  font-size: 1.2rem;
+  color: var(--medium-grey);
+  max-width: 500px;
+  margin: 1.5rem auto 0;
+}
+
+/* --- GRID LAYOUT & ENTRANCE ANIMATION --- */
+.contact-grid {
+  display: grid;
+  grid-template-columns: 1fr 1.2fr;
+  gap: 2rem;
+  padding-bottom: 120px;
+}
+
+.contact-info-panel, .contact-form-panel {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+}
+.contact-grid.is-visible .contact-info-panel {
+    opacity: 1;
+    transform: translateY(0);
+    transition-delay: 0.2s;
+}
+.contact-grid.is-visible .contact-form-panel {
+    opacity: 1;
+    transform: translateY(0);
+    transition-delay: 0.4s;
+}
+
+/* --- INFO PANEL & CARDS --- */
+.contact-info-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.info-card, .map-container {
+  background: rgba(255, 255, 255, 0.6);
+  backdrop-filter: blur(15px);
+  border-radius: var(--border-radius);
+  padding: 1.5rem;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.3s ease; /* Added transition */
+}
+
+.info-card:hover, .map-container:hover {
+    transform: translateY(-5px); /* Added lift effect */
+}
+
+.info-card::before, .map-container::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: var(--border-radius);
+  padding: 1px;
+  background: linear-gradient(120deg, var(--primary-color), transparent, var(--primary-color));
+  background-size: 300% 300%;
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  z-index: -1;
+  opacity: 0;
+  transition: opacity 0.5s ease;
+  animation: shimmer-border 6s linear infinite;
+}
+.info-card:hover::before, .map-container:hover::before {
+  opacity: 1;
+}
+
+.info-card h3 {
+  font-family: var(--font-heading);
+  font-size: 1.2rem;
+  margin: 0 0 0.5rem 0;
+}
+.info-card p {
+  margin: 0;
+  color: var(--medium-grey);
+}
+.info-card a {
+  color: var(--primary-color);
+  text-decoration: none;
+  font-weight: 500;
+}
+.info-card a:hover {
+  text-decoration: underline;
+}
+
+.map-container {
+  flex-grow: 1;
+  padding: 0;
+}
+.map-container iframe {
+  border-radius: var(--border-radius);
+}
+
+
+/* --- FORM PANEL & INTERACTIVE INPUTS --- */
+.contact-form-panel {
+  background: var(--white-color);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius);
+  padding: 3rem;
+  box-shadow: var(--box-shadow);
+}
+
+.contact-form h2 {
+  font-family: var(--font-heading);
+  font-size: 2rem;
+  text-align: center;
+  margin-top: 0;
+  margin-bottom: 2rem;
+}
+
+.form-group {
+  position: relative;
+  margin-bottom: 2.5rem; /* Increased spacing */
+}
+
+/* UPGRADED INPUTS */
+.form-group input, .form-group textarea, .form-group select {
+  width: 100%;
+  padding: 12px 0;
+  border: none;
+  border-bottom: 1px solid var(--border-color);
+  background: transparent;
+  font-size: 1rem;
+  font-family: var(--font-body);
+  color: var(--dark-charcoal);
+  position: relative;
+  z-index: 1;
+}
+.form-group select {
+    border-radius: 0;
+}
+
+.form-group label {
+  position: absolute;
+  top: 12px;
+  left: 0;
+  color: var(--medium-grey);
+  transition: all 0.3s ease;
+  pointer-events: none;
+}
+
+.form-group input:focus + label,
+.form-group input:not(:placeholder-shown) + label,
+.form-group textarea:focus + label,
+.form-group textarea:not(:placeholder-shown) + label {
+  top: -16px;
+  font-size: 0.8rem;
+  color: var(--primary-color);
+}
+
+/* NEW: Animated Underline */
+.form-group::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    height: 2px;
+    background: var(--primary-color);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.4s ease;
+}
+.form-group input:focus ~ ::after,
+.form-group textarea:focus ~ ::after {
+    transform: scaleX(1);
+}
+.form-group input:focus, .form-group textarea:focus, .form-group select:focus {
+  outline: none;
+  border-bottom-color: transparent; /* Hide static border on focus */
+}
+
+/* Select styling */
+.form-group select {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  background-image: url('data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="%236c757d" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"%3E%3Cpolyline points="6 9 12 15 18 9"%3E%3C/polyline%3E%3C/svg%3E');
+  background-repeat: no-repeat;
+  background-position: right 0 center;
+  cursor: pointer;
+}
+
+/* MAGNETIC BUTTON */
+/* Find and replace the old button rules with this new, advanced version */
+
+/* --- TESLA-LEVEL ADVANCED BUTTON --- */
+/* Find the button section in your file and replace it with this */
+
+/* --- TESLA-LEVEL ADVANCED BUTTON --- */
+.contact-form .btn-primary {
+  width: 100%;
+  position: relative;
+  overflow: hidden;
+  transform-style: preserve-3d;
+  transition: transform 0.4s cubic-bezier(0.19, 1, 0.22, 1);
+  will-change: transform;
+
+  /* --- UPDATED & NEW STYLES --- */
+  padding: 16px 32px; /* Increased vertical padding for a larger button */
+  font-family: var(--font-heading); /* Switched to the premium "Poppins" font */
+  font-size: 1.1rem; /* Made the font slightly larger */
+  letter-spacing: 0.5px; /* Added spacing for a cleaner look */
+  font-weight: 600;
+  /* -------------------------- */
+}
+
+.contact-form .btn-primary:hover {
+  transform: scale(1.05);
+}
+
+.contact-form .btn-primary:active {
+  transform: scale(0.98);
+}
+
+/* The text content of the button */
+.contact-form .btn-primary span {
+  position: relative;
+  z-index: 2;
+  display: block;
+  transition: transform 0.4s cubic-bezier(0.19, 1, 0.22, 1);
+}
+
+/* The new animated gradient background */
+.contact-form .btn-primary::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(115deg, hsla(217, 89%, 61%, 1) 10%, hsla(217, 89%, 45%, 1) 40%, hsla(217, 89%, 61%, 1) 90%);
+  animation: shimmer-bg 8s linear infinite;
+  z-index: 1;
+}
+
+@keyframes shimmer-bg {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+/* NEW: Success Message Styling */
+@keyframes fadeInScaleUp {
+    from { opacity: 0; transform: scale(0.95); }
+    to { opacity: 1; transform: scale(1); }
+}
+.success-message {
+    text-align: center;
+    padding: 2rem 0;
+    animation: fadeInScaleUp 0.5s ease-out;
+}
+.success-icon {
+    color: var(--primary-color);
+    margin-bottom: 1rem;
+}
+.success-message h3 {
+    font-family: var(--font-heading);
+    font-size: 1.8rem;
+    margin-bottom: 0.5rem;
+}
+.success-message p {
+    color: var(--medium-grey);
+    margin: 0;
+}
+
+/* RESPONSIVE */
+@media (max-width: 992px) {
+  .contact-grid {
+    grid-template-columns: 1fr;
+  }
+  .contact-title {
+    font-size: 3.5rem;
+  }
+}

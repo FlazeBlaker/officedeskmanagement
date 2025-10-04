@@ -7,6 +7,7 @@
   max-width: 1200px;
   margin: 0 auto;
   gap: 2rem;
+  /* The background-color property has been removed from this rule */
 }
 
 .hero-content {
