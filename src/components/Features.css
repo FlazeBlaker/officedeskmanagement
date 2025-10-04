@@ -1,22 +1,29 @@
-/* Animation styles remain the same */
+/* Add this rule to the top to give this section its own background */
+#features {
+  background-color: var(--light-grey);
+}
+
 .features-container .section-title,
 .features-container .section-subtitle,
-.features-container .feature-card {
+.features-container .tilt-component { 
   opacity: 0;
-  transform: translateY(20px);
+  transform: translateY(30px) scale(0.98);
   transition: opacity 0.6s ease-out, transform 0.6s ease-out;
 }
+
 .features-container.is-visible .section-title,
 .features-container.is-visible .section-subtitle {
   opacity: 1;
-  transform: translateY(0);
+  transform: translateY(0) scale(1);
 }
-.features-container.is-visible .feature-card:nth-child(1) { transition-delay: 0.2s; }
-.features-container.is-visible .feature-card:nth-child(2) { transition-delay: 0.4s; }
-.features-container.is-visible .feature-card:nth-child(3) { transition-delay: 0.6s; }
-.features-container.is-visible .feature-card {
+
+.features-container.is-visible .tilt-component:nth-of-type(1) { transition-delay: 0.2s; }
+.features-container.is-visible .tilt-component:nth-of-type(2) { transition-delay: 0.4s; }
+.features-container.is-visible .tilt-component:nth-of-type(3) { transition-delay: 0.6s; }
+
+.features-container.is-visible .tilt-component {
   opacity: 1;
-  transform: translateY(0);
+  transform: translateY(0) scale(1);
 }
 
 .features-grid {
@@ -25,23 +32,48 @@
   gap: 2rem;
 }
 
+.tilt-component {
+  border-radius: var(--border-radius);
+  position: relative;
+  overflow: hidden;
+  border: 1px solid var(--border-color);
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.tilt-component::before {
+  content: "";
+  position: absolute;
+  top: var(--mouse-y, 50%);
+  left: var(--mouse-x, 50%);
+  width: 400px;
+  height: 400px;
+  background: radial-gradient(circle at center, hsla(217, 89%, 61%, 0.15) 0%, transparent 70%);
+  transform: translate(-50%, -50%);
+  opacity: 0;
+  transition: opacity 0.5s ease;
+  pointer-events: none; 
+}
+
+.tilt-component:hover {
+  border-color: var(--primary-color);
+  box-shadow: var(--box-shadow);
+}
+
+.tilt-component:hover::before {
+  opacity: 1;
+}
+
 .feature-card {
   background-color: var(--white-color);
   padding: 2.5rem;
-  border-radius: var(--border-radius);
-  border: 1px solid var(--border-color);
-  box-shadow: none; /* Softer shadow on hover */
   text-align: left;
-  transition: border-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease;
   height: 100%;
-  border-top: 4px solid var(--border-color); /* Subtle top border */
+  border-top: 4px solid var(--border-color);
+  transition: border-color 0.3s ease;
 }
 
-.feature-card:hover {
-  border-color: var(--primary-color);
+.tilt-component:hover .feature-card {
   border-top-color: var(--primary-color);
-  box-shadow: var(--box-shadow);
-  transform: translateY(-5px);
 }
 
 .feature-icon {

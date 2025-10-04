@@ -4,12 +4,12 @@ import Hero from '../components/Hero';
 import Features from '../components/Features';
 import Pricing from '../components/Pricing';
 import Footer from '../components/Footer';
-// No longer importing ParticlesBackground
+import DigitalAurora from '../components/DigitalAurora';
 
 function HomePage() {
   return (
     <>
-      {/* No longer rendering ParticlesBackground */}
+      <DigitalAurora />
       <Navbar />
       <main>
         <Hero />

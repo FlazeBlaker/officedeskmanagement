@@ -9,8 +9,12 @@ function Navbar() {
       <nav className="navbar">
         <a href="/" className="nav-logo">Co.Work</a>
         <ul className={isOpen ? "nav-menu active" : "nav-menu"}>
-          <li className="nav-item"><a href="#features" className="nav-link" onClick={() => setIsOpen(false)}>Features</a></li>
-          <li className="nav-item"><a href="#pricing" className="nav-link" onClick={() => setIsOpen(false)}>Plans</a></li>
+          {/* --- TEXT UPDATED BELOW --- */}
+          <li className="nav-item"><a href="#features" className="nav-link" onClick={() => setIsOpen(false)}>Explore Spaces</a></li>
+          
+          {/* --- TEXT UPDATED BELOW --- */}
+          <li className="nav-item"><a href="#pricing" className="nav-link" onClick={() => setIsOpen(false)}>About Us</a></li>
+          
           <li className="nav-item"><a href="#contact" className="nav-link" onClick={() => setIsOpen(false)}>Contact</a></li>
           <li className="nav-item-cta"><a href="/login" className="btn btn-secondary">Log In</a></li>
         </ul>

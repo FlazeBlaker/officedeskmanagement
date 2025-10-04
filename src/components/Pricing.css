@@ -1,7 +1,7 @@
 .pricing-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 2rem;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); 
+  gap: 1.5rem;
   align-items: stretch; 
 }
 
@@ -14,6 +14,23 @@
   display: flex;
   flex-direction: column;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
+  position: relative; /* Required for the pseudo-element */
+  overflow: hidden; /* Keeps the glow inside the card */
+}
+
+/* --- THE AURORA GLOW EFFECT --- */
+.pricing-card::before {
+  content: "";
+  position: absolute;
+  top: var(--mouse-y, 50%);
+  left: var(--mouse-x, 50%);
+  width: 300px;
+  height: 300px;
+  background: radial-gradient(circle at center, hsla(217, 89%, 61%, 0.1) 0%, transparent 70%);
+  transform: translate(-50%, -50%);
+  opacity: 0;
+  transition: opacity 0.5s ease;
+  pointer-events: none;
 }
 
 .pricing-card:hover {
@@ -21,17 +38,19 @@
     box-shadow: var(--box-shadow);
 }
 
+.pricing-card:hover::before {
+  opacity: 1;
+}
+
 .pricing-card.popular {
   border: 2px solid var(--primary-color);
   transform: scale(1.05);
-  position: relative;
-  overflow: hidden;
-  box-shadow: var(--box-shadow);
 }
 .pricing-card.popular:hover {
   transform: scale(1.05) translateY(-10px);
 }
 
+/* The rest of the styles remain the same */
 .popular-badge {
   position: absolute;
   top: 0;
@@ -42,6 +61,12 @@
   font-size: 0.9rem;
   font-weight: 700;
   border-bottom-left-radius: var(--border-radius);
+  z-index: 1; /* Make sure it's above the glow */
+}
+
+.plan-name, .plan-price, .plan-duration, .plan-features, .btn-full {
+  position: relative; /* Place content above the glow */
+  z-index: 1;
 }
 
 .plan-name {
@@ -86,11 +111,9 @@
   left: 0;
 }
 
-/* --- THE BUTTON ALIGNMENT FIX --- */
 .btn-full {
-  margin-top: auto; /* Pushes button to the bottom */
-  align-self: center; /* Add this line to center the button horizontally */
-  /* The "width: 100%" property has been removed */
+  margin-top: auto; 
+  align-self: center; 
 }
 
 .btn-primary {
