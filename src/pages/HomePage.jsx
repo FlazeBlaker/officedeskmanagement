@@ -10,7 +10,7 @@ function HomePage() {
   return (
     <>
       {/* No longer rendering ParticlesBackground */}
-      <Navbar />
+      {/* <Navbar /> */}
       <main>
         <Hero />
         <Features />
