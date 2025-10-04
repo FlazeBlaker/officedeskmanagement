@@ -1,0 +1,570 @@
+/* ==========================================================================
+   BOOKING PROCESS - HEAVENLY HUMAN EXPERIENCE
+   ========================================================================== */
+
+/* --- 1. GENERAL & SHARED STYLES --- */
+.booking-container {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color: #f8f9fa;
+  padding: 40px 5%;
+  overflow: hidden;
+}
+
+.booking-step {
+  width: 95%;
+  max-width: 1200px;
+  background-color: white;
+  border-radius: 24px;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15);
+  border: 1px solid #dee2e6;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+}
+
+.step-title {
+  font-family: var(--font-heading);
+  font-size: 3rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+  letter-spacing: -1.5px;
+  color: #212529;
+}
+
+.step-subtitle {
+  font-size: 1.2rem;
+  color: #6c757d;
+  max-width: 600px;
+  margin: 0 auto 40px auto;
+  line-height: 1.7;
+}
+
+.progress-bar-container {
+  width: 95%;
+  max-width: 1200px;
+  height: 8px;
+  background-color: #e9ecef;
+  border-radius: 50px;
+  margin-bottom: 20px;
+  overflow: hidden;
+}
+
+.progress-bar {
+  height: 100%;
+  background: linear-gradient(90deg, #0A74DA, #00c6ff);
+  border-radius: 50px;
+}
+
+.step-actions {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  width: 100%;
+  margin-top: 40px;
+}
+
+.step-actions .btn {
+  margin-top: 0;
+  min-width: 200px;
+}
+
+.btn-back {
+  background-color: transparent;
+  border: 2px solid #dee2e6;
+  color: #212529;
+}
+
+.btn-back:hover {
+  border-color: var(--primary-color);
+  color: var(--primary-color);
+}
+
+
+/* --- 2. STEP 1 & 4: SPLIT LAYOUT --- */
+.booking-step.split-layout {
+  flex-direction: row;
+  padding: 0;
+  overflow: hidden;
+}
+
+.step-content {
+  padding: 40px 60px;
+  flex-basis: 55%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.step-image-container {
+  flex-basis: 45%;
+  background-size: cover;
+  background-position: center;
+  align-self: stretch;
+}
+
+.date-image {
+  background-image: url('https://images.unsplash.com/photo-1522202176988-66273c2fd55f?q=80&w=1771');
+}
+
+.details-image {
+  background-image: url('https://images.unsplash.com/photo-1497215728101-856f4ea42174?q=80&w=1770');
+}
+
+
+/* --- 3. STEP 1: CALENDAR STYLES --- */
+.calendar-wrapper {
+  width: 100%;
+  max-width: 420px;
+  margin-bottom: 1.5rem;
+}
+.react-calendar {
+  width: 100% !important;
+  border: 1px solid var(--border-color) !important;
+  border-radius: var(--border-radius);
+  font-family: var(--font-body);
+  padding: 10px;
+}
+.react-calendar__tile {
+  padding: 1.1em 0.5em;
+  font-size: 0.9rem;
+  border-radius: 8px;
+}
+.react-calendar__navigation button {
+  font-size: 1.2rem;
+  font-weight: 700;
+  font-family: var(--font-heading);
+}
+.react-calendar__tile--active {
+  background: var(--primary-color) !important;
+  color: white !important;
+}
+.react-calendar__tile--now {
+  background: var(--light-grey) !important;
+}
+.react-calendar__tile:enabled:hover,
+.react-calendar__tile:enabled:focus {
+  background: #e6e6e6 !important;
+}
+
+
+/* --- 4. STEP 2: "HEAVENLY" RESOURCE SELECTION --- */
+.resource-selection-step {
+  padding: 80px 40px;
+}
+
+.resource-carousel {
+  display: flex;
+  gap: 2.5rem;
+  justify-content: center;
+  width: 100%;
+  margin-top: 40px;
+  perspective: 1500px;
+}
+
+.resource-card-new {
+  width: 320px;
+  height: 450px;
+  border-radius: 16px;
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+  border: 1px solid #dee2e6;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.07);
+  transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+}
+
+.card-3d-wrapper {
+  transform-style: preserve-3d;
+  width: 100%;
+  height: 100%;
+}
+
+.resource-card-new.selected {
+  border: 2px solid var(--primary-color);
+  box-shadow: 0 0 40px hsla(217, 89%, 61%, 0.5);
+}
+
+.card-bg-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.6s cubic-bezier(0.165, 0.84, 0.44, 1);
+}
+
+.resource-card-new.selected .card-bg-image,
+.resource-card-new:hover .card-bg-image {
+  transform: scale(1.1);
+}
+
+.card-overlay-new {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: linear-gradient(to top, rgba(0,0,0,0.9) 20%, transparent);
+  padding: 1.5rem;
+  color: white;
+}
+
+.card-title-new {
+  font-family: var(--font-heading);
+  font-size: 1.7rem;
+  margin: 0;
+}
+
+.card-description-new {
+  font-size: 0.9rem;
+  margin-top: 0.5rem;
+  opacity: 0.9;
+  line-height: 1.6;
+}
+
+
+/* --- 5. STEP 3: "HEAVENLY" MAP PAGE --- */
+.map-step {
+  flex-direction: row;
+  height: 750px;
+  padding: 0;
+  overflow: hidden;
+}
+
+.map-panel-left {
+  flex-basis: 35%;
+  background-color: #f8f9fa;
+  padding: 2.5rem;
+  overflow-y: auto;
+  border-right: 1px solid #dee2e6;
+  display: flex;
+  flex-direction: column;
+}
+
+.map-panel-right {
+  flex-basis: 65%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2.5rem;
+  background: #f8f9fa; /* Lighter background for the panel to sit on */
+}
+
+.map-panel-title {
+  color: #212529;
+  font-family: var(--font-heading);
+  line-height: 1.2;
+  font-size: 2rem;
+  margin-bottom: 1.5rem;
+  text-align: left;
+}
+
+.resource-list {
+  flex-grow: 1;
+}
+
+.resource-list-item {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem;
+  margin: 0.5rem 0;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+  position: relative;
+  border: 1px solid #dee2e6;
+}
+
+.resource-list-item:hover {
+  background-color: #eef7ff;
+  border-color: var(--primary-color);
+  transform: translateX(5px);
+}
+
+.resource-list-item.selected {
+  background: var(--primary-color);
+  border-color: var(--primary-color);
+  color: white;
+  transform: translateX(5px);
+}
+
+.item-thumbnail {
+  width: 60px;
+  height: 60px;
+  border-radius: 6px;
+  object-fit: cover;
+}
+
+.item-info {
+  text-align: left;
+}
+
+.item-id {
+  color: #212529;
+  font-weight: bold;
+}
+
+.item-zone {
+  color: #6c757d;
+  font-size: 0.9rem;
+}
+
+.resource-list-item.selected .item-id,
+.resource-list-item.selected .item-zone {
+  color: white;
+}
+
+.resource-list-item.unavailable {
+  opacity: 0.5;
+  cursor: not-allowed;
+  background-color: #f8f9fa;
+}
+
+.item-status {
+  position: absolute;
+  right: 1rem;
+  font-size: 0.8rem;
+  font-weight: bold;
+  color: #dc3545;
+}
+
+
+/* --- 6. "HEAVENLY" DETAILS PANEL & FORM --- */
+.details-panel {
+  width: 100%;
+  height: 100%;
+  color: #212529;
+  text-align: left;
+  background: white;
+  padding: 1.5rem;
+  border-radius: 16px;
+  box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+  overflow-y: auto;
+}
+
+.details-image-wrapper {
+  width: 100%;
+  height: 300px; /* Adjusted height */
+  border-radius: 12px;
+  margin-bottom: 1.5rem;
+  overflow: hidden;
+}
+
+.details-image-large {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  animation: kenburns 20s ease-out infinite alternate;
+}
+
+.details-content h3 {
+  font-family: var(--font-heading);
+  font-size: 2rem;
+  margin: 0 0 1rem 0;
+}
+
+.details-content p {
+  color: #6c757d;
+  margin-bottom: 1.5rem;
+  font-size: 1rem;
+  line-height: 1.7;
+}
+
+.key-info {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+  border: 1px solid #dee2e6;
+}
+
+.info-item {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.info-item span {
+  font-size: 0.9rem;
+  color: #6c757d;
+  margin-bottom: 0.25rem;
+}
+
+.info-item strong {
+  font-size: 1.4rem;
+  font-weight: 700;
+  font-family: var(--font-heading);
+}
+
+.details-content h4 {
+  font-family: var(--font-heading);
+  margin-bottom: 1rem;
+  font-size: 1.2rem;
+}
+
+.amenities-list {
+  list-style: none;
+  padding: 0;
+  margin-top: 1rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.amenities-list li {
+  background-color: #f8f9fa;
+  padding: 0.6rem 1.2rem;
+  border-radius: 20px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  border: 1px solid #dee2e6;
+}
+
+/* Polished Form from Step 4 */
+.details-form {
+  width: 100%;
+  max-width: 450px;
+}
+.form-group {
+  position: relative;
+  margin-bottom: 2.5rem;
+}
+.form-group input {
+  width: 100%;
+  padding: 14px 0;
+  border: none;
+  border-bottom: 2px solid #dee2e6;
+  font-size: 1.1rem;
+  font-family: var(--font-body);
+  background: transparent;
+  transition: border-color 0.2s;
+}
+.form-group label {
+  position: absolute;
+  left: 0;
+  top: 15px;
+  font-size: 1.1rem;
+  color: #6c757d;
+  pointer-events: none;
+  transition: all 0.2s ease;
+}
+.form-group input:focus,
+.form-group input:valid {
+  outline: none;
+  border-bottom-color: var(--primary-color);
+}
+.form-group input:focus + label,
+.form-group input:valid + label {
+  top: -10px;
+  font-size: 0.8rem;
+  color: var(--primary-color);
+}
+
+/* --- 7. "HEAVENLY" CONFIRMATION --- */
+.confirmation {
+  padding: 60px;
+}
+.checkmark {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  display: block;
+  stroke-width: 3;
+  stroke: #4BB543;
+  stroke-miterlimit: 10;
+  margin: 0 auto 20px;
+}
+.checkmark-circle {
+  stroke-dasharray: 166;
+  stroke-dashoffset: 166;
+}
+.checkmark-check {
+  transform-origin: 50% 50%;
+  stroke-dasharray: 48;
+  stroke-dashoffset: 48;
+}
+.confirmation-card {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 40px;
+  background-color: #f8f9fa;
+  padding: 30px;
+  border-radius: var(--border-radius);
+  width: 100%;
+  border: 1px solid var(--border-color);
+}
+.qr-code-wrapper {
+  padding: 15px;
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+.booking-summary {
+  text-align: left;
+}
+.booking-summary h3 {
+  font-family: var(--font-heading);
+  margin-top: 0;
+}
+.booking-summary p {
+  margin: 8px 0;
+}
+.scan-instruction {
+  font-weight: bold;
+  color: var(--primary-color);
+  margin-top: 15px;
+}
+.calendar-buttons {
+  display: flex;
+  gap: 15px;
+  margin-top: 30px;
+}
+
+
+/* --- 8. ANIMATIONS & RESPONSIVE --- */
+@keyframes kenburns {
+  from { transform: scale(1); }
+  to { transform: scale(1.1); }
+}
+
+@media (max-width: 992px) {
+  .map-step {
+    flex-direction: column;
+    height: auto;
+  }
+  .map-panel-left, .map-panel-right {
+    flex-basis: auto;
+    width: 100%;
+  }
+  .map-panel-right {
+    min-height: 500px;
+  }
+}
+
+@media (max-width: 768px) {
+  .booking-step.split-layout {
+    flex-direction: column;
+  }
+  .step-image-container {
+    height: 200px;
+    width: 100%;
+  }
+  .step-content {
+    flex-basis: auto;
+    padding: 30px;
+  }
+  .resource-carousel {
+    flex-direction: column;
+    align-items: center;
+  }
+}
