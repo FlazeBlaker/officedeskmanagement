@@ -27,4 +27,6 @@ body {
   max-width: 1200px;
   margin: 0 auto;
 }
-/* ... rest of the file remains the same */
+html, body {
+    overflow-x: hidden;
+}

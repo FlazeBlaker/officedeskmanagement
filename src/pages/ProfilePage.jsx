@@ -18,7 +18,6 @@ function ProfilePage() {
             }
 
             try {
-                // --- UPDATED FETCH CALL ---
                 const response = await fetch('http://localhost:3001/api/profile', {
                     method: 'GET',
                     headers: {

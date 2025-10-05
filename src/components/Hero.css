@@ -1,5 +1,5 @@
-/* Keyframe for the main content blocks fading in and sliding up ("pop in") */
-@keyframes fadeInUp {
+/* --- HERO UNIQUE KEYFRAMES --- */
+@keyframes hero-fadeInUp {
     from {
         opacity: 0;
         transform: translateY(20px);
@@ -11,8 +11,7 @@
     }
 }
 
-/* Keyframe for the image panning effect */
-@keyframes panImage {
+@keyframes hero-panImage {
     0% {
         transform: scale(1.05) translate(0, 0);
     }
@@ -22,8 +21,7 @@
     }
 }
 
-/* Keyframe to reveal the highlight from left to right */
-@keyframes reveal-highlight {
+@keyframes hero-reveal-highlight {
     from {
         clip-path: polygon(0 0, 0 0, 0 100%, 0% 100%);
     }
@@ -33,19 +31,16 @@
     }
 }
 
-/* --- The change is in this rule below --- */
+/* --- HERO COMPONENT STYLES --- */
 .hero-section {
     display: flex;
     justify-content: space-between;
-    min-height: calc(100vh - 70px);
+    min-height: calc(100vh - 75px); /* Adjusted for new navbar height */
     max-width: 1200px;
     margin: 0 auto;
     gap: 2rem;
-    /* --- MODIFIED LINES --- */
-    /* We change 'align-items' from 'center' to 'flex-start' to push content to the top. */
     align-items: flex-start;
-    /* Then we add top padding to position it nicely. Adjust '15vh' as needed. */
-    padding: 15vh 5% 2rem;
+    padding: 12vh 5% 2rem; /* Adjusted top padding slightly */
 }
 
 .hero-content {
@@ -63,7 +58,7 @@
     position: relative;
     color: var(--dark-charcoal);
     z-index: 1;
-    animation: fadeInUp 0.8s ease-out forwards;
+    animation: hero-fadeInUp 0.8s ease-out forwards;
     opacity: 0;
 }
 
@@ -76,32 +71,50 @@
         bottom: -0.15em;
         z-index: -1;
         background: linear-gradient( to right, hsla(217, 89%, 61%, 0.15) 50%, hsla(217, 89%, 61%, 0) 100% );
-        animation: reveal-highlight 1.2s cubic-bezier(0.87, 0, 0.13, 1) 0.5s forwards;
+        animation: hero-reveal-highlight 1.2s cubic-bezier(0.87, 0, 0.13, 1) 0.5s forwards;
         clip-path: polygon(0 0, 0 0, 0 100%, 0% 100%);
     }
-
 
 .hero-subtitle {
     font-size: 1.2rem;
     color: var(--medium-grey);
     margin-bottom: 2.5rem;
-    animation: fadeInUp 0.8s ease-out 0.3s forwards;
+    animation: hero-fadeInUp 0.8s ease-out 0.3s forwards;
     opacity: 0;
 }
 
-.hero-content .btn {
-    animation: fadeInUp 0.8s ease-out 0.6s forwards;
+/* --- HERO-SPECIFIC BUTTON STYLES (IMPROVED) --- */
+.hero-content .btn-primary {
+    /* Base styles */
+    padding: 16px 32px;
+    font-size: 1.1rem;
+    font-weight: 700;
+    border-radius: 50px;
+    text-decoration: none;
+    border: none; /* Ensure no border interferes */
+    cursor: pointer;
+    display: inline-block; /* Essential for text and padding */
+    /* Gradient background for a premium look */
+    background: linear-gradient(90deg, #6c63ff 0%, #a8c0ff 100%);
+    color: var(--white-color);
+    /* Initial glow and animation */
+    box-shadow: 0 5px 20px rgba(108, 99, 255, 0.4);
+    transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94); /* Smoother transition */
+    /* Animation on load */
+    animation: hero-fadeInUp 0.8s ease-out 0.6s forwards;
     opacity: 0;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
-    .hero-content .btn:hover {
-        transform: translateY(-3px);
-        box-shadow: 0 10px 20px -10px var(--primary-color);
+    .hero-content .btn-primary:hover {
+        /* Enhanced hover effects */
+        transform: translateY(-5px) scale(1.02); /* More noticeable lift and slight scale */
+        box-shadow: 0 10px 30px rgba(108, 99, 255, 0.6), 0 0 40px rgba(108, 99, 255, 0.3); /* Stronger, wider glow */
+        background: linear-gradient(90deg, #7c73ff 0%, #b8d0ff 100%); /* Slightly lighter gradient on hover */
     }
 
+
 .hero-image-container {
-    animation: fadeInUp 0.8s ease-out 0.4s forwards;
+    animation: hero-fadeInUp 0.8s ease-out 0.4s forwards;
     opacity: 0;
     -webkit-mask-image: radial-gradient(circle, black 60%, transparent 90%);
     mask-image: radial-gradient(circle, black 60%, transparent 90%);
@@ -110,15 +123,14 @@
 .hero-image {
     max-width: 500px;
     width: 100%;
-    animation: panImage 15s ease-in-out infinite alternate;
+    animation: hero-panImage 15s ease-in-out infinite alternate;
 }
 
-/* Media query for responsive adjustments */
+/* --- HERO RESPONSIVE STYLES --- */
 @media (max-width: 992px) {
     .hero-section {
         flex-direction: column;
         text-align: center;
-        /* Adjust padding for mobile to be closer to the top */
         padding-top: 60px;
     }
 

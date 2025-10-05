@@ -1,7 +1,9 @@
 import React from 'react';
 import { Routes, Route } from 'react-router-dom';
+
 import Layout from './components/Layout';
 import DigitalAurora from './components/DigitalAurora';
+import MathBackground from './components/MathBackground'; // <-- 1. Import the new component
 import HomePage from './pages/HomePage';
 import BookingPage from './pages/BookingPage';
 import AboutPage from './pages/AboutPage';
@@ -15,7 +17,10 @@ import './index.css';
 function App() {
     return (
         <>
+            {/* Backgrounds are placed here to persist across all pages */}
             <DigitalAurora />
+            <MathBackground /> {/* <-- 2. Add the component here */}
+
             <Routes>
                 {/* Routes with Navbar and Footer */}
                 <Route path="/" element={<Layout />}>

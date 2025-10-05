@@ -1,126 +1,163 @@
 .pricing-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); 
-  gap: 1.5rem;
-  align-items: stretch; 
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5rem;
+    align-items: stretch;
 }
 
 .pricing-card {
-  background-color: var(--white-color);
-  padding: 2.5rem;
-  border-radius: var(--border-radius);
-  border: 1px solid var(--border-color);
-  text-align: center;
-  display: flex;
-  flex-direction: column;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-  position: relative; /* Required for the pseudo-element */
-  overflow: hidden; /* Keeps the glow inside the card */
+    background-color: var(--white-color);
+    padding: 2.5rem;
+    border-radius: var(--border-radius);
+    border: 1px solid var(--border-color);
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    position: relative; /* Required for the pseudo-element */
+    overflow: hidden; /* Keeps the glow inside the card */
 }
 
-/* --- THE AURORA GLOW EFFECT --- */
-.pricing-card::before {
-  content: "";
-  position: absolute;
-  top: var(--mouse-y, 50%);
-  left: var(--mouse-x, 50%);
-  width: 300px;
-  height: 300px;
-  background: radial-gradient(circle at center, hsla(217, 89%, 61%, 0.1) 0%, transparent 70%);
-  transform: translate(-50%, -50%);
-  opacity: 0;
-  transition: opacity 0.5s ease;
-  pointer-events: none;
-}
+    /* --- THE AURORA GLOW EFFECT --- */
+    .pricing-card::before {
+        content: "";
+        position: absolute;
+        top: var(--mouse-y, 50%);
+        left: var(--mouse-x, 50%);
+        width: 300px;
+        height: 300px;
+        background: radial-gradient(circle at center, hsla(217, 89%, 61%, 0.1) 0%, transparent 70%);
+        transform: translate(-50%, -50%);
+        opacity: 0;
+        transition: opacity 0.5s ease;
+        pointer-events: none;
+    }
 
-.pricing-card:hover {
-    transform: translateY(-10px);
-    box-shadow: var(--box-shadow);
-}
+    .pricing-card:hover {
+        transform: translateY(-10px);
+        box-shadow: var(--box-shadow);
+    }
 
-.pricing-card:hover::before {
-  opacity: 1;
-}
+        .pricing-card:hover::before {
+            opacity: 1;
+        }
 
-.pricing-card.popular {
-  border: 2px solid var(--primary-color);
-  transform: scale(1.05);
-}
-.pricing-card.popular:hover {
-  transform: scale(1.05) translateY(-10px);
-}
+    .pricing-card.popular {
+        border: 2px solid #6c63ff; /* Match new button color */
+        transform: scale(1.05);
+    }
+
+        .pricing-card.popular:hover {
+            transform: scale(1.05) translateY(-10px);
+        }
 
 /* The rest of the styles remain the same */
 .popular-badge {
-  position: absolute;
-  top: 0;
-  right: 0;
-  background-color: var(--primary-color);
-  color: var(--white-color);
-  padding: 0.5rem 1rem;
-  font-size: 0.9rem;
-  font-weight: 700;
-  border-bottom-left-radius: var(--border-radius);
-  z-index: 1; /* Make sure it's above the glow */
+    position: absolute;
+    top: 0;
+    right: 0;
+    background-color: #6c63ff; /* Match new button color */
+    color: var(--white-color);
+    padding: 0.5rem 1rem;
+    font-size: 0.9rem;
+    font-weight: 700;
+    border-bottom-left-radius: var(--border-radius);
+    z-index: 1; /* Make sure it's above the glow */
 }
 
-.plan-name, .plan-price, .plan-duration, .plan-features, .btn-full {
-  position: relative; /* Place content above the glow */
-  z-index: 1;
+.plan-name, .plan-price, .plan-duration, .plan-features {
+    position: relative; /* Place content above the glow */
+    z-index: 1;
 }
 
 .plan-name {
-  font-family: var(--font-heading);
-  font-size: 1.25rem;
-  font-weight: 600;
-  color: var(--dark-charcoal);
+    font-family: var(--font-heading);
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--dark-charcoal);
 }
 
 .plan-price {
-  font-family: var(--font-heading);
-  font-size: 3rem;
-  font-weight: 800;
-  margin: 1rem 0;
-  color: var(--primary-color);
+    font-family: var(--font-heading);
+    font-size: 3rem;
+    font-weight: 800;
+    margin: 1rem 0;
+    color: #3f2b96; /* Darker purple for price */
 }
 
 .plan-duration {
-  font-size: 1rem;
-  font-weight: 500;
-  color: var(--medium-grey);
+    font-size: 1rem;
+    font-weight: 500;
+    color: var(--medium-grey);
 }
 
 .plan-features {
-  list-style: none;
-  padding: 0;
-  margin: 1.5rem 0;
-  text-align: left;
-  flex-grow: 1; 
+    list-style: none;
+    padding: 0;
+    margin: 1.5rem 0;
+    text-align: left;
+    flex-grow: 1;
 }
 
-.plan-features li {
-  margin-bottom: 1rem;
-  padding-left: 25px;
-  position: relative;
+    .plan-features li {
+        margin-bottom: 1rem;
+        padding-left: 25px;
+        position: relative;
+    }
+
+        .plan-features li::before {
+            content: '✔';
+            color: #6c63ff; /* Match new button color */
+            position: absolute;
+            left: 0;
+        }
+
+/* === IMPROVED PRICING BUTTONS === */
+
+/* Base styles for all buttons inside the pricing card */
+.pricing-card .btn {
+    margin-top: auto;
+    align-self: center;
+    width: 100%;
+    max-width: 220px;
+    text-decoration: none;
+    border: 2px solid;
+    transition: all 0.3s ease;
+    position: relative;
+    z-index: 1;
+    /* Use global button styles */
+    padding: 12px 28px;
+    font-size: 1rem;
+    font-weight: 600;
+    border-radius: 50px;
+    cursor: pointer;
 }
 
-.plan-features li::before {
-  content: '✔';
-  color: var(--primary-color);
-  position: absolute;
-  left: 0;
+/* Primary Button Style (for "Most Popular" plan) */
+.pricing-card .btn-primary {
+    background: linear-gradient(90deg, #6c63ff 0%, #a8c0ff 100%);
+    color: white;
+    border-color: transparent;
+    box-shadow: 0 5px 20px rgba(108, 99, 255, 0.4);
 }
 
-.btn-full {
-  margin-top: auto; 
-  align-self: center; 
+    .pricing-card .btn-primary:hover {
+        transform: translateY(-3px) scale(1.02);
+        box-shadow: 0 8px 25px rgba(108, 99, 255, 0.6);
+        opacity: 1; /* Override any generic hover opacity */
+    }
+
+
+/* Secondary Button Style (for other plans) */
+.pricing-card .btn-secondary {
+    background: transparent;
+    color: #6c63ff;
+    border-color: #6c63ff;
 }
 
-.btn-primary {
-  background-color: var(--primary-color);
-  color: var(--white-color);
-}
-
-.btn-primary:hover {
-  opacity: 0.9;
-}
+    .pricing-card .btn-secondary:hover {
+        background: #6c63ff;
+        color: white;
+        transform: translateY(-3px);
+        box-shadow: 0 8px 20px rgba(108, 99, 255, 0.3);
+    }

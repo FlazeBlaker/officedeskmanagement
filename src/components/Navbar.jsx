@@ -1,48 +1,100 @@
-import React, { useState, useContext } from 'react';
-import { Link, NavLink, useNavigate } from 'react-router-dom';
-import { AuthContext } from '../context/AuthContext';
-import './Navbar.css';
+import React, { useState, useContext } from "react";
+import { Link, NavLink, useNavigate } from "react-router-dom";
+import { AuthContext } from "../context/AuthContext";
+import "./Navbar.css";
+
+// Avatar component to generate initials from a name
+const Avatar = ({ name }) => {
+    const initials = name
+        ? name
+            .split(" ")
+            .map((n) => n[0])
+            .join("")
+            .substring(0, 2)
+            .toUpperCase()
+        : "?";
+    return <div className="navbar-user-avatar">{initials}</div>;
+};
 
 function Navbar() {
-    const [isOpen, setIsOpen] = useState(false);
+    const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+    const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     const { user, logout } = useContext(AuthContext);
     const navigate = useNavigate();
 
-    const closeMobileMenu = () => {
-        setIsOpen(false);
-        window.scrollTo(0, 0);
+    const closeAllMenus = () => {
+        setIsMobileMenuOpen(false);
+        setIsDropdownOpen(false);
     };
 
     const handleLogout = () => {
         logout();
-        closeMobileMenu();
-        navigate('/');
+        closeAllMenus();
+        navigate("/");
     };
 
     return (
-        <header className="header">
-            <nav className="navbar">
-                <Link to="/" className="nav-logo" onClick={closeMobileMenu}>Co.Work</Link>
+        <header className="navbar-header">
+            <nav className="navbar-component">
+                <Link to="/" className="navbar-logo-link" onClick={closeAllMenus}>
+                    <img src="/logo.png" alt="Co.Work Logo" className="navbar-logo-img" />
+                </Link>
 
-                <ul className={isOpen ? "nav-menu active" : "nav-menu"}>
-                    <li><NavLink to="/" className="nav-link" onClick={closeMobileMenu}>Explore Spaces</NavLink></li>
-                    <li><NavLink to="/about" className="nav-link" onClick={closeMobileMenu}>About Us</NavLink></li>
-                    <li><NavLink to="/contact" className="nav-link" onClick={closeMobileMenu}>Contact</NavLink></li>
-
-                    {user ? (
-                        <>
-                            <li><Link to="/profile" className="nav-link" onClick={closeMobileMenu}>Profile</Link></li>
-                            <li><button onClick={handleLogout} className="btn btn-secondary">Log Out</button></li>
-                        </>
-                    ) : (
-                        <li><Link to="/login" className="btn btn-secondary" onClick={closeMobileMenu}>Log In</Link></li>
+                <ul className={isMobileMenuOpen ? "navbar-menu active" : "navbar-menu"}>
+                    <li>
+                        <NavLink to="/" className="navbar-link" onClick={closeAllMenus}>
+                            Explore Spaces
+                        </NavLink>
+                    </li>
+                    <li>
+                        <NavLink to="/about" className="navbar-link" onClick={closeAllMenus}>
+                            About Us
+                        </NavLink>
+                    </li>
+                    <li>
+                        <NavLink to="/contact" className="navbar-link" onClick={closeAllMenus}>
+                            Contact
+                        </NavLink>
+                    </li>
+                    {!user && (
+                        <li>
+                            <Link to="/login" className="navbar-btn-glow" onClick={closeAllMenus}>
+                                Log In
+                            </Link>
+                        </li>
                     )}
                 </ul>
 
-                <div className={isOpen ? "hamburger active" : "hamburger"} onClick={() => setIsOpen(!isOpen)}>
-                    <span className="bar"></span>
-                    <span className="bar"></span>
-                    <span className="bar"></span>
+                {user && (
+                    <div className="navbar-user-menu-container">
+                        <div onClick={() => setIsDropdownOpen(!isDropdownOpen)}>
+                            <Avatar name={user.name} />
+                        </div>
+                        <ul className={`navbar-dropdown-menu ${isDropdownOpen ? "active" : ""}`}>
+                            <li>
+                                <Link to="/profile" className="navbar-dropdown-item" onClick={closeAllMenus}>
+                                    Profile
+                                </Link>
+                            </li>
+                            <li>
+                                <Link to="/book-trial" className="navbar-dropdown-item" onClick={closeAllMenus}>
+                                    My Bookings
+                                </Link>
+                            </li>
+                            <li onClick={handleLogout} className="navbar-dropdown-item navbar-logout">
+                                Log Out
+                            </li>
+                        </ul>
+                    </div>
+                )}
+
+                <div
+                    className={isMobileMenuOpen ? "navbar-hamburger active" : "navbar-hamburger"}
+                    onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                >
+                    <span className="navbar-bar"></span>
+                    <span className="navbar-bar"></span>
+                    <span className="navbar-bar"></span>
                 </div>
             </nav>
         </header>
