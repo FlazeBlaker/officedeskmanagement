@@ -1,4 +1,6 @@
-import React from 'react';
+import React, { useContext } from 'react';
+import { useNavigate, Link } from 'react-router-dom';
+import { AuthContext } from '../context/AuthContext';
 import './Pricing.css';
 
 // A reusable card component to handle the animation logic
@@ -20,9 +22,32 @@ const PricingCard = ({ children, className = '' }) => {
 };
 
 function Pricing() {
+    const { user } = useContext(AuthContext);
+    const navigate = useNavigate();
+
+    const handleFreeTrial = () => {
+        if (user) {
+            // If user is logged in, proceed to booking
+            navigate('/book-trial');
+        } else {
+            // If not logged in, redirect to login page
+            navigate('/login');
+        }
+    };
+
+    // --- UPDATED FUNCTION ---
+    const handleChoosePlan = (planName, planPrice) => {
+        if (user) {
+            // If logged in, proceed to the payment page with plan details
+            navigate('/payment', { state: { planName, planPrice } });
+        } else {
+            // If not logged in, redirect to the login page
+            navigate('/login');
+        }
+    };
+
     return (
         <section id="pricing" className="section">
-            {/* --- UPDATED LINES START --- */}
             <h2 className="section-title">
                 Find a Plan That's <span>Right For You</span>
             </h2>
@@ -30,7 +55,6 @@ function Pricing() {
                 Simple, transparent pricing for individuals and teams.
                 <span>Start with our no-commitment free trial.</span>
             </p>
-            {/* --- UPDATED LINES END --- */}
             <div className="pricing-grid">
 
                 <PricingCard>
@@ -42,7 +66,7 @@ function Pricing() {
                         <li>Unlimited coffee & tea</li>
                         <li>Experience the community</li>
                     </ul>
-                    <a href="#" className="btn btn-secondary btn-full">Start Free Trial</a>
+                    <button onClick={handleFreeTrial} className="btn btn-secondary btn-full">Start Free Trial</button>
                 </PricingCard>
 
                 <PricingCard>
@@ -54,7 +78,7 @@ function Pricing() {
                         <li>Access to phone booths</li>
                         <li>Perfect for a single day</li>
                     </ul>
-                    <a href="#" className="btn btn-secondary btn-full">Choose Plan</a>
+                    <button onClick={() => handleChoosePlan('Day Pass', '₹799')} className="btn btn-secondary btn-full">Choose Plan</button>
                 </PricingCard>
 
                 <PricingCard className="popular">
@@ -67,7 +91,7 @@ function Pricing() {
                         <li>Access to community events</li>
                         <li>Mail & package handling</li>
                     </ul>
-                    <a href="#" className="btn btn-primary btn-full">Choose Plan</a>
+                    <button onClick={() => handleChoosePlan('Monthly Flex', '₹12,999')} className="btn btn-primary btn-full">Choose Plan</button>
                 </PricingCard>
 
                 <PricingCard>
@@ -79,7 +103,7 @@ function Pricing() {
                         <li>24/7 access</li>
                         <li>All-inclusive amenities</li>
                     </ul>
-                    <a href="#" className="btn btn-secondary btn-full">Get a Quote</a>
+                    <Link to="/contact" className="btn btn-secondary btn-full">Get a Quote</Link>
                 </PricingCard>
 
             </div>

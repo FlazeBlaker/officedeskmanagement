@@ -1,0 +1,257 @@
+.payment-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    background-color: var(--light-grey);
+    padding: 2rem;
+    font-family: var(--font-body);
+}
+
+.payment-layout {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2rem;
+}
+
+/* --- 3D Card Scene & Flip --- */
+.card-scene {
+    width: 380px;
+    height: 240px;
+    perspective: 1000px;
+}
+
+.credit-card {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    transform-style: preserve-3d;
+    transition: transform 0.8s cubic-bezier(0.77, 0, 0.175, 1);
+}
+
+    .credit-card.flipped {
+        transform: rotateY(180deg);
+    }
+
+.card-face {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    backface-visibility: hidden;
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+}
+
+/* --- Card Front Styling --- */
+.card-front {
+    background: linear-gradient(135deg, #6c63ff, #3f2b96);
+    color: white;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 25px;
+}
+
+.card-chip {
+    width: 50px;
+    height: 40px;
+    background-color: #ffcc00;
+    border-radius: 6px;
+}
+
+.card-logo img {
+    height: 35px;
+    width: auto;
+    opacity: 0.8;
+    filter: brightness(0) invert(1);
+    position: absolute;
+    top: 25px;
+    right: 25px;
+}
+
+.card-number {
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 1.8rem;
+    letter-spacing: 2px;
+}
+
+.card-footer {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+}
+
+    .card-footer span {
+        opacity: 0.7;
+    }
+
+    .card-footer strong {
+        font-size: 1rem;
+        letter-spacing: 1px;
+    }
+
+
+/* --- Card Back Styling --- */
+.card-back {
+    background: #e6e9ee;
+    transform: rotateY(180deg);
+}
+
+.card-strip {
+    width: 100%;
+    height: 50px;
+    background: #333;
+    margin-top: 30px;
+}
+
+.card-cvc-box {
+    padding: 15px;
+    text-align: right;
+}
+
+    .card-cvc-box span {
+        font-size: 0.9rem;
+        color: var(--medium-grey);
+    }
+
+.cvc-display {
+    background: white;
+    height: 40px;
+    margin-top: 5px;
+    border-radius: 6px;
+    padding: 10px;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 1.2rem;
+    letter-spacing: 2px;
+}
+
+/* --- Form Container --- */
+.payment-form-container {
+    width: 100%;
+    max-width: 450px;
+    background: white;
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow);
+    overflow: hidden;
+    animation: fadeInScaleUp 0.5s ease-out 0.3s backwards;
+}
+
+@keyframes fadeInScaleUp {
+    from {
+        opacity: 0;
+        transform: scale(0.95);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+.payment-header {
+    background-color: #f8f9fa;
+    padding: 1.5rem;
+    text-align: center;
+    border-bottom: 1px solid var(--border-color);
+}
+
+    .payment-header h2 {
+        margin: 0 0 0.5rem 0;
+    }
+
+    .payment-header p {
+        margin: 0;
+        opacity: 0.9;
+    }
+
+/* --- SIMPLIFIED FORM STYLES --- */
+.payment-form {
+    padding: 2.5rem;
+}
+
+    .payment-form .form-group {
+        margin-bottom: 1.5rem;
+    }
+
+    .payment-form input {
+        width: 100%;
+        padding: 14px;
+        border: 1px solid var(--border-color);
+        border-radius: 8px;
+        font-size: 1rem;
+        transition: border-color 0.3s, box-shadow 0.3s;
+    }
+
+        /* Style for the placeholder text */
+        .payment-form input::placeholder {
+            color: #999;
+        }
+
+        .payment-form input:focus {
+            outline: none;
+            border-color: #6c63ff;
+            box-shadow: 0 0 0 3px rgba(108, 99, 255, 0.2);
+        }
+
+.form-row {
+    display: flex;
+    gap: 1rem;
+}
+
+    .form-row .form-group {
+        flex: 1;
+    }
+
+.btn-full {
+    width: 100%;
+}
+
+
+/* --- Success Card Styles --- */
+.payment-success-card {
+    text-align: center;
+    padding: 3rem;
+    animation: fadeInScaleUp 0.5s ease-out;
+}
+
+.success-checkmark {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background: #4BB543;
+    color: white;
+    font-size: 3rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1.5rem;
+    animation: checkmark-pop 0.5s ease-out 0.2s backwards;
+}
+
+@keyframes checkmark-pop {
+    0% {
+        transform: scale(0.5);
+        opacity: 0;
+    }
+
+    80% {
+        transform: scale(1.1);
+    }
+
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+.payment-success-card h2 {
+    margin-bottom: 1rem;
+}
+
+.payment-success-card p {
+    color: var(--medium-grey);
+    margin-bottom: 2rem;
+}
