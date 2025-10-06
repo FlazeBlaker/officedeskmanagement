@@ -1,26 +1,28 @@
-﻿const express = require('express');
+﻿// --- SETUP ---
+require('dotenv').config({ path: 'secure.env' }); // Load environment variables from .env file
+const express = require('express');
 const mysql = require('mysql2');
 const cors = require('cors');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
 const app = express();
-const port = 3001;
-const saltRounds = 10;
-const JWT_SECRET = 'your-super-secret-key-that-is-long-and-random';
+// Use variables from .env file, with fallbacks
+const port = process.env.PORT || 3001;
+const saltRounds = parseInt(process.env.BCRYPT_SALT_ROUNDS) || 10;
+const JWT_SECRET = process.env.JWT_SECRET;
 
 // --- MIDDLEWARE ---
 app.use(cors());
 app.use(express.json());
 
-// --- MYSQL CONNECTION POOL (IMPROVED) ---
+// --- MYSQL CONNECTION POOL (IMPROVED & SECURE) ---
 const db = mysql.createPool({
-    host: 'localhost',
-    user: 'root',
-
-    password: 'shaizan@sql1',
-    database: 'officedeskmanagement',
-    connectionLimit: 10
+    host: process.env.DB_HOST,
+    user: process.env.DB_USER,
+    password: process.env.DB_PASSWORD,
+    database: process.env.DB_NAME,
+    connectionLimit: parseInt(process.env.DB_CONNECTION_LIMIT) || 10
 }).promise();
 
 

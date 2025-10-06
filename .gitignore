@@ -1,3 +1,7 @@
+# Environment Variables
+# Keep secrets and credentials out of the repository
+secure.env
+
 # Logs
 logs
 *.log
