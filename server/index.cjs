@@ -17,10 +17,13 @@ app.use(express.json());
 const db = mysql.createPool({
     host: 'localhost',
     user: 'root',
-    password: 'Leo@1205',
+
+    password: 'shaizan@sql1',
     database: 'officedeskmanagement',
     connectionLimit: 10
 }).promise();
+
+
 
 // =================================================================
 // --- USER AUTH ROUTES ---
