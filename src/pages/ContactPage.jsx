@@ -35,16 +35,35 @@ function ContactPage() {
     setFormData(prevData => ({ ...prevData, [name]: value }));
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    setIsSubmitting(true);
-    // Simulate a network request
-    setTimeout(() => {
-      // For demonstration, we'll assume success.
-      setSubmissionResult('success');
-      setIsSubmitting(false);
-    }, 2000);
-  };
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        setIsSubmitting(true);
+        setSubmissionResult(null);
+
+        try {
+            // Send data to our new backend endpoint
+            const response = await fetch('http://localhost:3001/api/contact', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(formData),
+            });
+
+            if (!response.ok) {
+                throw new Error('Server responded with an error');
+            }
+
+            setSubmissionResult('success');
+        } catch (error) {
+            console.error('Contact form submission error:', error);
+            setSubmissionResult('error');
+        } finally {
+            setIsSubmitting(false);
+        }
+    };
+
+
 
   // Effect for the magnetic button
   useEffect(() => {
@@ -135,7 +154,12 @@ function ContactPage() {
               </div>
               <button type="submit" className="btn btn-primary" disabled={isSubmitting}>
                 <span>{isSubmitting ? 'Sending...' : 'Send Message'}</span>
-              </button>
+                              </button>
+                              {submissionResult === 'error' && (
+                                  <p style={{ color: 'red', textAlign: 'center', marginTop: '1rem' }}>
+                                      Sorry, something went wrong. Please try again.
+                                  </p>
+                              )}
             </form>
           )}
         </div>

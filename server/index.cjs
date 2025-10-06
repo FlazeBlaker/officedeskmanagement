@@ -13,43 +13,31 @@ const JWT_SECRET = 'your-super-secret-key-that-is-long-and-random';
 app.use(cors());
 app.use(express.json());
 
-// --- MYSQL CONNECTION ---
-const db = mysql.createConnection({
+// --- MYSQL CONNECTION POOL (IMPROVED) ---
+const db = mysql.createPool({
     host: 'localhost',
     user: 'root',
     password: 'Leo@1205',
-    database: 'officedeskmanagement'
-});
+    database: 'officedeskmanagement',
+    connectionLimit: 10
+}).promise();
 
-db.connect(err => {
-    if (err) {
-        console.error('Error connecting to MySQL:', err);
-        return;
-    }
-    console.log('Connected to MySQL database! 🎉');
-});
+// =================================================================
+// --- USER AUTH ROUTES ---
+// =================================================================
 
-// --- JWT AUTHENTICATION MIDDLEWARE ---
 const authenticateToken = (req, res, next) => {
     const authHeader = req.headers['authorization'];
-    const token = authHeader && authHeader.split(' ')[1]; // Bearer TOKEN
-
-    if (token == null) {
-        return res.sendStatus(401); // Unauthorized if no token
-    }
+    const token = authHeader && authHeader.split(' ')[1];
+    if (token == null) return res.sendStatus(401);
 
     jwt.verify(token, JWT_SECRET, (err, user) => {
-        if (err) {
-            return res.sendStatus(403); // Forbidden if token is invalid
-        }
-        req.user = user; // Attach user payload to the request object
-        next(); // Proceed to the route handler
+        if (err) return res.sendStatus(403);
+        req.user = user;
+        next();
     });
 };
 
-// --- API ROUTES ---
-
-// POST /api/register
 app.post('/api/register', async (req, res) => {
     const { name, email, password } = req.body;
     if (!name || !email || !password) {
@@ -58,28 +46,24 @@ app.post('/api/register', async (req, res) => {
     try {
         const password_hash = await bcrypt.hash(password, saltRounds);
         const sql = "INSERT INTO users (name, email, password_hash) VALUES (?, ?, ?)";
-        db.query(sql, [name, email, password_hash], (err, result) => {
-            if (err) {
-                if (err.code === 'ER_DUP_ENTRY') return res.status(409).json({ message: 'Email already exists.' });
-                return res.status(500).json({ message: 'Database error.' });
-            }
-            res.status(201).json({ message: 'User registered successfully!' });
-        });
+        await db.query(sql, [name, email, password_hash]);
+        res.status(201).json({ message: 'User registered successfully!' });
     } catch (error) {
-        res.status(500).json({ message: 'Server error.' });
+        if (error.code === 'ER_DUP_ENTRY') return res.status(409).json({ message: 'Email already exists.' });
+        res.status(500).json({ message: 'Database or server error.' });
     }
 });
 
-// POST /api/login
-app.post('/api/login', (req, res) => {
+app.post('/api/login', async (req, res) => {
     const { email, password } = req.body;
     const sql = "SELECT * FROM users WHERE email = ?";
-    db.query(sql, [email], async (err, results) => {
-        if (err) return res.status(500).json({ message: 'Database error.' });
+    try {
+        const [results] = await db.query(sql, [email]);
         if (results.length === 0) return res.status(401).json({ message: 'Invalid email or password.' });
 
         const user = results[0];
         const match = await bcrypt.compare(password, user.password_hash);
+
         if (match) {
             const tokenPayload = { id: user.id, name: user.name, email: user.email };
             const token = jwt.sign(tokenPayload, JWT_SECRET, { expiresIn: '1d' });
@@ -87,35 +71,86 @@ app.post('/api/login', (req, res) => {
         } else {
             res.status(401).json({ message: 'Invalid email or password.' });
         }
-    });
+    } catch (error) {
+        res.status(500).json({ message: 'Database or server error.' });
+    }
 });
 
-// POST /api/reset-password
 app.post('/api/reset-password', async (req, res) => {
     const { email, newPassword } = req.body;
     if (!email || !newPassword) return res.status(400).json({ message: 'Email and new password are required.' });
-    const password_hash = await bcrypt.hash(newPassword, saltRounds);
-    const sql = "UPDATE users SET password_hash = ? WHERE email = ?";
-    db.query(sql, [password_hash, email], (err, result) => {
-        if (err) return res.status(500).json({ message: 'Database error.' });
+    try {
+        const password_hash = await bcrypt.hash(newPassword, saltRounds);
+        const sql = "UPDATE users SET password_hash = ? WHERE email = ?";
+        const [result] = await db.query(sql, [password_hash, email]);
         if (result.affectedRows === 0) return res.status(404).json({ message: 'User with that email not found.' });
         res.status(200).json({ message: 'Password has been reset successfully.' });
-    });
+    } catch (error) {
+        res.status(500).json({ message: 'Database or server error.' });
+    }
 });
 
-// GET /api/profile (Protected and Dynamic)
-app.get('/api/profile', authenticateToken, (req, res) => {
-    // We get the user's ID from the token middleware
-    const userId = req.user.id;
-
-    const sql = 'SELECT id, name, email, bio, avatar_url FROM users WHERE id = ?';
-    db.query(sql, [userId], (err, results) => {
-        if (err) return res.status(500).json({ error: 'Database error' });
+app.get('/api/profile', authenticateToken, async (req, res) => {
+    try {
+        const userId = req.user.id;
+        const sql = 'SELECT id, name, email, bio, avatar_url FROM users WHERE id = ?';
+        const [results] = await db.query(sql, [userId]);
         if (results.length === 0) return res.status(404).json({ error: 'User not found' });
         res.json(results[0]);
-    });
+    } catch (error) {
+        res.status(500).json({ message: 'Database or server error.' });
+    }
 });
 
+// =================================================================
+// --- BOOKING & CONTACT ROUTES ---
+// =================================================================
+
+app.get('/api/resources', async (req, res) => {
+    const { date, type } = req.query;
+    if (!date || !type) return res.status(400).json({ message: 'Date and resource type are required.' });
+    try {
+        const bookedQuery = "SELECT resource_id FROM bookings WHERE booking_date = ?";
+        const [bookedRows] = await db.query(bookedQuery, [date]);
+        const bookedIds = bookedRows.map(row => row.resource_id);
+
+        let resourcesQuery = "SELECT * FROM resources WHERE type = ?";
+        const params = [type];
+        if (bookedIds.length > 0) {
+            resourcesQuery += ` AND id NOT IN (?)`;
+            params.push(bookedIds);
+        }
+        const [availableRows] = await db.query(resourcesQuery, params);
+        res.status(200).json(availableRows);
+    } catch (error) {
+        res.status(500).json({ message: 'Error fetching resources.' });
+    }
+});
+
+app.post('/api/bookings', async (req, res) => {
+    const { resourceId, date, name, email } = req.body;
+    const bookingDate = new Date(date).toISOString().slice(0, 10);
+    try {
+        const sql = "INSERT INTO bookings (resource_id, booking_date, user_name, user_email) VALUES (?, ?, ?, ?)";
+        const [result] = await db.query(sql, [resourceId, bookingDate, name, email]);
+        res.status(201).json({ message: 'Booking confirmed!', bookingId: result.insertId });
+    } catch (error) {
+        res.status(500).json({ message: 'Could not create booking.' });
+    }
+});
+
+app.post('/api/contact', async (req, res) => {
+    const { name, email, subject, message } = req.body;
+    try {
+        const sql = 'INSERT INTO contact_inquiries (name, email, subject, message) VALUES (?, ?, ?, ?)';
+        const [result] = await db.query(sql, [name, email, subject, message]);
+        res.status(201).json({ message: 'Message received successfully!', id: result.insertId });
+    } catch (error) {
+        res.status(500).json({ message: 'Failed to save message.' });
+    }
+});
+
+// --- SERVER START ---
 app.listen(port, () => {
     console.log(`Backend server running at http://localhost:${port}`);
 });
