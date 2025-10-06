@@ -64,3 +64,4 @@ INSERT INTO users (name, email, password_hash) VALUES ('Sanika', 'sanika@example
 
 -- Show a success message
 SELECT 'Database officedeskmanagement and all tables created successfully!' AS Status;
+

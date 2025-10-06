@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 
-function Step4_Details({ onNext, onPrev }) {
+// Change 'onNext' to 'onConfirm' here 👇
+function Step4_Details({ onConfirm, onPrev }) {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
 
@@ -16,7 +17,8 @@ function Step4_Details({ onNext, onPrev }) {
         <motion.h1 className="step-title" initial={{y:-20, opacity:0}} animate={{y:0, opacity:1}}>Almost there!</motion.h1>
         <motion.p className="step-subtitle" initial={{y:-20, opacity:0}} animate={{y:0, opacity:1}} transition={{delay: 0.1}}>Just a few details to lock in your free spot.</motion.p>
 
-        <motion.form className="details-form" onSubmit={(e) => { e.preventDefault(); onNext({ name, email }); }} initial={{opacity:0}} animate={{opacity:1}} transition={{delay: 0.2}}>
+        {/* And change 'onNext' to 'onConfirm' in the form submission handler here 👇 */}
+        <motion.form className="details-form" onSubmit={(e) => { e.preventDefault(); onConfirm({ name, email }); }} initial={{opacity:0}} animate={{opacity:1}} transition={{delay: 0.2}}>
           <div className="form-group">
             <input type="text" id="name" value={name} onChange={(e) => setName(e.target.value)} required />
             <label htmlFor="name">What should we call you?</label>
