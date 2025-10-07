@@ -1,11 +1,13 @@
 ﻿import React, { useState } from 'react';
 import { useLocation, Link } from 'react-router-dom';
 import './PaymentPage.css';
+import axios from 'axios';
+import { useAuth } from '../context/AuthContext';
 
 function PaymentPage() {
     const location = useLocation();
     const { planName, planPrice } = location.state || { planName: 'Selected Plan', planPrice: 'N/A' };
-
+    const { token } = useAuth();
     const [cardDetails, setCardDetails] = useState({
         number: '',
         name: '',
@@ -34,14 +36,36 @@ function PaymentPage() {
         setCardDetails(prev => ({ ...prev, [name]: formattedValue }));
     };
 
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        setIsProcessing(true);
-        setTimeout(() => {
-            setIsProcessing(false);
+    const handleSubmit = async (e) => {
+    e.preventDefault();
+    setIsProcessing(true);
+
+    console.log("Frontend is sending this token:", token); 
+    try {
+        // Prepare the data to send to the backend
+        const apiPayload = { planName, planPrice };
+
+        // Call your backend API with the user's auth token
+        const response = await axios.post('http://localhost:3001/api/subscribe', apiPayload, {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        });
+
+        // If the backend confirms success (status 201), show the success screen
+        if (response.status === 201) {
             setIsSuccess(true);
-        }, 2000);
-    };
+        }
+
+    } catch (error) {
+        console.error("Payment failed:", error);
+        // You can add an error state here later if you want
+        alert("Sorry, your payment could not be processed. Please try again.");
+    } finally {
+        // This ensures the button is re-enabled whether it succeeds or fails
+        setIsProcessing(false);
+    }
+};
 
     if (isSuccess) {
         return (

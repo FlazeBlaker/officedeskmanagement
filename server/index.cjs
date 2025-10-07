@@ -36,6 +36,12 @@ const authenticateToken = (req, res, next) => {
     const token = authHeader && authHeader.split(' ')[1];
     if (token == null) return res.sendStatus(401);
 
+    // 👇 ADD THESE TWO LOGS FOR DEBUGGING
+    console.log("--------------------");
+    console.log("Verifying token:", token);
+    console.log("Using JWT_SECRET:", process.env.JWT_SECRET); 
+    console.log("--------------------");
+
     jwt.verify(token, JWT_SECRET, (err, user) => {
         if (err) return res.sendStatus(403);
         req.user = user;
@@ -107,6 +113,29 @@ app.get('/api/profile', authenticateToken, async (req, res) => {
     }
 });
 
+// ... after your /api/profile route in index.cjs
+
+app.post('/api/subscribe', authenticateToken, async (req, res) => {
+    const { planName, planPrice } = req.body;
+    const userId = req.user.id; // We get the user ID from the authenticated token
+
+    if (!planName || !planPrice) {
+        return res.status(400).json({ message: 'Plan details are required.' });
+    }
+
+    try {
+        const sql = "INSERT INTO user_plans (user_id, plan_name, plan_price) VALUES (?, ?, ?)";
+        // Convert price string like '₹999' to a number 999
+        const priceNumber = parseFloat(planPrice.replace(/[^0-9.-]+/g, "")); 
+        
+        await db.query(sql, [userId, planName, priceNumber]);
+        res.status(201).json({ message: 'Plan activated successfully!' });
+    } catch (error) {
+        console.error("Error activating plan:", error);
+        res.status(500).json({ message: 'Database or server error.' });
+    }
+});
+
 // =================================================================
 // --- BOOKING & CONTACT ROUTES ---
 // =================================================================
@@ -115,8 +144,12 @@ app.get('/api/resources', async (req, res) => {
     const { date, type } = req.query;
     if (!date || !type) return res.status(400).json({ message: 'Date and resource type are required.' });
     try {
+        // 👇 ADD THIS LINE TO FIX THE DATE FORMAT
+        const bookingDate = new Date(date).toISOString().slice(0, 10);
+
+        // Use the new 'bookingDate' variable in the query
         const bookedQuery = "SELECT resource_id FROM bookings WHERE booking_date = ?";
-        const [bookedRows] = await db.query(bookedQuery, [date]);
+        const [bookedRows] = await db.query(bookedQuery, [bookingDate]); // 👈 USE THE CORRECTED DATE HERE
         const bookedIds = bookedRows.map(row => row.resource_id);
 
         let resourcesQuery = "SELECT * FROM resources WHERE type = ?";
@@ -127,9 +160,12 @@ app.get('/api/resources', async (req, res) => {
         }
         const [availableRows] = await db.query(resourcesQuery, params);
         res.status(200).json(availableRows);
-    } catch (error) {
+ 
+   } catch (error) {
+        // Add a console.log here to help with future debugging!
+        console.error("Error in /api/resources:", error); 
         res.status(500).json({ message: 'Error fetching resources.' });
-    }
+ }
 });
 
 app.post('/api/bookings', async (req, res) => {
