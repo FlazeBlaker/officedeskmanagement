@@ -14,7 +14,7 @@ import ForgotPasswordPage from './pages/ForgotPasswordPage';
 import ProfilePage from './pages/ProfilePage';
 import PaymentPage from './pages/PaymentPage'; // <-- IMPORT THE NEW PAGE
 import './index.css';
-
+import MyBookingsPage from './pages/MyBookingsPage'; // <-- IMPORT THE NEW PAGE
 function App() {
     return (
         <>
@@ -30,6 +30,7 @@ function App() {
                     <Route path="about" element={<AboutPage />} />
                     <Route path="contact" element={<ContactPage />} />
                     <Route path="profile" element={<ProfilePage />} />
+                    <Route path="my-bookings" element={<MyBookingsPage />} /> {/* <-- ADD THIS ROUTE */}
                 </Route>
 
                 {/* Auth routes without Navbar and Footer */}

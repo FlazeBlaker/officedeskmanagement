@@ -70,14 +70,24 @@ function Navbar() {
                         <div onClick={() => setIsDropdownOpen(!isDropdownOpen)}>
                             <Avatar name={user.name} />
                         </div>
+
                         <ul className={`navbar-dropdown-menu ${isDropdownOpen ? "active" : ""}`}>
                             <li>
-                                <Link to="/profile" className="navbar-dropdown-item" onClick={closeAllMenus}>
+                                <Link
+                                    to="/profile"
+                                    className="navbar-dropdown-item"
+                                    onClick={closeAllMenus}
+                                >
                                     Profile
                                 </Link>
                             </li>
                             <li>
-                                <Link to="/book-trial" className="navbar-dropdown-item" onClick={closeAllMenus}>
+                                {/* --- THIS IS THE CORRECTED LINE --- */}
+                                <Link
+                                    to="/my-bookings"
+                                    className="navbar-dropdown-item"
+                                    onClick={closeAllMenus}
+                                >
                                     My Bookings
                                 </Link>
                             </li>

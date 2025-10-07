@@ -38,7 +38,7 @@ CREATE TABLE bookings (
     FOREIGN KEY (resource_id) REFERENCES resources(id),
     UNIQUE KEY (resource_id, booking_date) -- Prevents double booking
 );
-
+select * from bookings;
 -- 4. CONTACT INQUIRIES TABLE
 CREATE TABLE contact_inquiries (
   id INT AUTO_INCREMENT PRIMARY KEY,
@@ -48,10 +48,29 @@ CREATE TABLE contact_inquiries (
   message TEXT NOT NULL,
   submitted_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+-- ... (after your contact_inquiries table)
 
+-- 5. PLAN PURCHASES TABLE
+CREATE TABLE plan_purchases (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  user_id INT NOT NULL,
+  plan_name VARCHAR(255) NOT NULL,
+  amount_paid DECIMAL(10, 2) NOT NULL,
+  purchase_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  transaction_id VARCHAR(255), -- For future payment gateway integration
+  FOREIGN KEY (user_id) REFERENCES users(id)
+);
+select * from plan_purchases;
 select * from contact_inquiries;
 
 -- --- PRE-POPULATE WITH SAMPLE DATA ---
+ALTER TABLE users
+ADD COLUMN bio TEXT,
+ADD COLUMN avatar_url VARCHAR(255) DEFAULT 'https://i.pravatar.cc/150';
+
+UPDATE users 
+SET bio = 'Lover of modern workspaces and innovative technology. Building the future one desk at a time.' 
+WHERE email = 'jaypawar1205@gmail.com';
 
 -- Insert sample resources from your React code
 INSERT INTO resources (id, type, zone, image_url, info, amenities, capacity, price_per_day) VALUES

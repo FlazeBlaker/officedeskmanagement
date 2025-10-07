@@ -1,22 +1,16 @@
 ﻿import React, { useState } from 'react';
 import { useLocation, Link } from 'react-router-dom';
 import './PaymentPage.css';
-import axios from 'axios';
-import { useAuth } from '../context/AuthContext';
 
 function PaymentPage() {
     const location = useLocation();
     const { planName, planPrice } = location.state || { planName: 'Selected Plan', planPrice: 'N/A' };
-    const { token } = useAuth();
-    const [cardDetails, setCardDetails] = useState({
-        number: '',
-        name: '',
-        expiry: '',
-        cvc: ''
-    });
+
+    const [cardDetails, setCardDetails] = useState({ number: '', name: '', expiry: '', cvc: '' });
     const [isFlipped, setIsFlipped] = useState(false);
     const [isProcessing, setIsProcessing] = useState(false);
     const [isSuccess, setIsSuccess] = useState(false);
+    const [error, setError] = useState('');
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -37,35 +31,42 @@ function PaymentPage() {
     };
 
     const handleSubmit = async (e) => {
-    e.preventDefault();
-    setIsProcessing(true);
+        e.preventDefault();
+        setIsProcessing(true);
+        setError('');
 
-    console.log("Frontend is sending this token:", token); 
-    try {
-        // Prepare the data to send to the backend
-        const apiPayload = { planName, planPrice };
+        // 1. Simulate payment processing delay
+        await new Promise(resolve => setTimeout(resolve, 2000));
 
-        // Call your backend API with the user's auth token
-        const response = await axios.post('http://localhost:3001/api/subscribe', apiPayload, {
-            headers: {
-                'Authorization': `Bearer ${token}`
+        try {
+            // 2. After payment, get the auth token and send purchase data to backend
+            const token = localStorage.getItem('authToken');
+            if (!token) {
+                throw new Error('You must be logged in to make a purchase.');
             }
-        });
 
-        // If the backend confirms success (status 201), show the success screen
-        if (response.status === 201) {
+            const response = await fetch('http://localhost:3001/api/purchases', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}` // Send the JWT
+                },
+                body: JSON.stringify({ planName, planPrice }),
+            });
+
+            if (!response.ok) {
+                const data = await response.json();
+                throw new Error(data.message || 'Failed to save purchase to your account.');
+            }
+
+            // 3. If everything is successful, show the success screen
             setIsSuccess(true);
+        } catch (err) {
+            setError(err.message);
+        } finally {
+            setIsProcessing(false);
         }
-
-    } catch (error) {
-        console.error("Payment failed:", error);
-        // You can add an error state here later if you want
-        alert("Sorry, your payment could not be processed. Please try again.");
-    } finally {
-        // This ensures the button is re-enabled whether it succeeds or fails
-        setIsProcessing(false);
-    }
-};
+    };
 
     if (isSuccess) {
         return (
@@ -118,55 +119,23 @@ function PaymentPage() {
                     </div>
                     <form onSubmit={handleSubmit} className="payment-form">
                         <div className="form-group">
-                            <input
-                                type="tel"
-                                name="number"
-                                value={cardDetails.number}
-                                onChange={handleChange}
-                                maxLength="19"
-                                placeholder="Card Number"
-                                required
-                            />
+                            <input type="tel" name="number" value={cardDetails.number} onChange={handleChange} maxLength="19" placeholder="Card Number" required />
                         </div>
                         <div className="form-group">
-                            <input
-                                type="text"
-                                name="name"
-                                value={cardDetails.name}
-                                onChange={handleChange}
-                                placeholder="Cardholder Name"
-                                required
-                            />
+                            <input type="text" name="name" value={cardDetails.name} onChange={handleChange} placeholder="Cardholder Name" required />
                         </div>
                         <div className="form-row">
                             <div className="form-group">
-                                <input
-                                    type="text"
-                                    name="expiry"
-                                    value={cardDetails.expiry}
-                                    onChange={handleChange}
-                                    maxLength="5"
-                                    placeholder="Expiry Date (MM/YY)"
-                                    required
-                                />
+                                <input type="text" name="expiry" value={cardDetails.expiry} onChange={handleChange} maxLength="5" placeholder="Expiry Date (MM/YY)" required />
                             </div>
                             <div className="form-group">
-                                <input
-                                    type="tel"
-                                    name="cvc"
-                                    value={cardDetails.cvc}
-                                    onChange={handleChange}
-                                    maxLength="4"
-                                    placeholder="CVC"
-                                    required
-                                    onFocus={() => setIsFlipped(true)}
-                                    onBlur={() => setIsFlipped(false)}
-                                />
+                                <input type="tel" name="cvc" value={cardDetails.cvc} onChange={handleChange} maxLength="4" placeholder="CVC" required onFocus={() => setIsFlipped(true)} onBlur={() => setIsFlipped(false)} />
                             </div>
                         </div>
                         <button type="submit" className="btn btn-primary btn-full" disabled={isProcessing}>
                             {isProcessing ? 'Processing...' : `Pay ${planPrice}`}
                         </button>
+                        {error && <p className="form-error-message">{error}</p>}
                     </form>
                 </div>
             </div>

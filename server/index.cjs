@@ -113,7 +113,84 @@ app.get('/api/profile', authenticateToken, async (req, res) => {
     }
 });
 
-// ... after your /api/profile route in index.cjs
+// NEW: Endpoint to update a user's profile (name and bio)
+app.put('/api/profile', authenticateToken, async (req, res) => {
+    try {
+        const userId = req.user.id;
+        const { name, bio } = req.body;
+
+        if (!name) {
+            return res.status(400).json({ message: 'Name cannot be empty.' });
+        }
+
+        const sql = 'UPDATE users SET name = ?, bio = ? WHERE id = ?';
+        await db.query(sql, [name, bio, userId]);
+        res.status(200).json({ message: 'Profile updated successfully!' });
+    } catch (error) {
+        res.status(500).json({ message: 'Database or server error.' });
+    }
+});
+
+// --- BOOKING & PLAN ROUTES ---
+// NEW: Endpoint to get a user's past bookings
+app.get('/api/my-bookings', authenticateToken, async (req, res) => {
+    try {
+        const userId = req.user.id;
+        // This query joins bookings with resources to get more details
+        const sql = `
+            SELECT b.booking_date, r.zone, r.type
+            FROM bookings b
+            JOIN resources r ON b.resource_id = r.id
+            JOIN users u ON b.user_email = u.email
+            WHERE u.id = ?
+            ORDER BY b.booking_date DESC
+        `;
+        const [bookings] = await db.query(sql, [userId]);
+        res.status(200).json(bookings);
+    } catch (error) {
+        res.status(500).json({ message: 'Error fetching bookings.' });
+    }
+});
+
+// NEW: Endpoint to get a user's most recent active plan
+app.get('/api/my-plan', authenticateToken, async (req, res) => {
+    try {
+        const userId = req.user.id;
+        // Gets the most recent purchase for the user
+        const sql = 'SELECT plan_name, purchase_date FROM plan_purchases WHERE user_id = ? ORDER BY purchase_date DESC LIMIT 1';
+        const [results] = await db.query(sql, [userId]);
+        if (results.length === 0) {
+            // It's not an error to have no plan, just send a default
+            return res.status(200).json({ plan_name: 'No Active Plan' });
+        }
+        res.status(200).json(results[0]);
+    } catch (error) {
+        res.status(500).json({ message: 'Error fetching active plan.' });
+    }
+});
+
+app.post('/api/purchases', authenticateToken, async (req, res) => {
+    // Get the logged-in user's ID from the JWT middleware
+    const userId = req.user.id;
+    const { planName, planPrice } = req.body;
+
+    if (!planName || !planPrice) {
+        return res.status(400).json({ message: 'Plan details are required.' });
+    }
+
+    try {
+        // Convert price string (e.g., "₹12,999") to a number
+        const amountPaid = parseFloat(planPrice.replace(/[^\d.]/g, ''));
+
+        const sql = 'INSERT INTO plan_purchases (user_id, plan_name, amount_paid) VALUES (?, ?, ?)';
+        const [result] = await db.query(sql, [userId, planName, amountPaid]);
+
+        res.status(201).json({ message: 'Purchase recorded successfully!', purchaseId: result.insertId });
+    } catch (error) {
+        console.error("Purchase recording error:", error);
+        res.status(500).json({ message: 'Failed to record purchase.' });
+    }
+});
 
 app.post('/api/subscribe', authenticateToken, async (req, res) => {
     const { planName, planPrice } = req.body;

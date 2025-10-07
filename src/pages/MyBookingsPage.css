@@ -1,0 +1,68 @@
+.bookings-page-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 4rem 5%;
+    min-height: calc(100vh - 75px - 200px); /* Full height minus navbar and footer */
+}
+
+.bookings-title {
+    font-family: var(--font-heading);
+    font-size: 3rem;
+    font-weight: 800;
+    text-align: center;
+    margin-bottom: 3rem;
+    color: var(--dark-charcoal);
+}
+
+.bookings-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1.5rem;
+}
+
+.booking-card {
+    background: var(--white-color);
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+    overflow: hidden;
+    box-shadow: var(--box-shadow);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+    .booking-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 12px 28px rgba(0,0,0,0.1);
+    }
+
+.booking-card-header {
+    background: linear-gradient(135deg, #a8c0ff, #6c63ff);
+    color: white;
+    padding: 1rem 1.5rem;
+    font-weight: 700;
+    font-size: 1.1rem;
+}
+
+.booking-card-body {
+    padding: 1.5rem;
+}
+
+.booking-card-zone {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: var(--dark-charcoal);
+    margin: 0 0 0.5rem 0;
+}
+
+.booking-card-type {
+    font-size: 1rem;
+    color: var(--medium-grey);
+    text-transform: capitalize;
+    margin: 0;
+}
+
+.no-bookings-message {
+    text-align: center;
+    font-size: 1.2rem;
+    color: var(--medium-grey);
+    padding: 3rem;
+}

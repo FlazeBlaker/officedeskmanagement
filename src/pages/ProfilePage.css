@@ -1,15 +1,15 @@
 .profile-container {
     display: flex;
     justify-content: center;
-    align-items: center;
+    align-items: flex-start; /* Changed to flex-start for long pages */
     padding: 100px 5%;
     background-color: var(--light-grey);
-    min-height: calc(100vh - 75px); /* 75px is navbar height */
+    min-height: calc(100vh - 75px);
 }
 
 .profile-card {
     width: 100%;
-    max-width: 600px;
+    max-width: 700px; /* Wider card for more content */
     background-color: var(--white-color);
     border-radius: var(--border-radius);
     box-shadow: var(--box-shadow);
@@ -32,6 +32,7 @@
     background: linear-gradient(45deg, #a8c0ff, #6c63ff);
     color: var(--white-color);
     padding: 2.5rem;
+    position: relative;
 }
 
 .profile-avatar {
@@ -56,30 +57,130 @@
 }
 
 .profile-body {
-    padding: 2.5rem;
+    padding: 1.5rem 2.5rem; /* Adjusted padding */
     text-align: left;
 }
 
-    .profile-body h2 {
+.profile-section {
+    margin-bottom: 2rem;
+}
+
+    .profile-section h2 {
         font-family: var(--font-heading);
         margin: 0 0 1rem 0;
         border-bottom: 2px solid var(--border-color);
         padding-bottom: 0.5rem;
+        font-size: 1.5rem;
     }
 
-.profile-bio {
+.profile-bio.empty {
     color: var(--medium-grey);
-    line-height: 1.7;
+    font-style: italic;
 }
 
+/* --- EDIT MODE STYLES --- */
+.profile-name-edit,
+.profile-bio-edit {
+    width: 100%;
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+    font-family: var(--font-body);
+    font-size: 1rem;
+}
+
+.profile-name-edit {
+    font-size: 2rem;
+    font-weight: bold;
+    text-align: center;
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+    border-color: rgba(255, 255, 255, 0.5);
+}
+
+.profile-bio-edit {
+    min-height: 100px;
+    resize: vertical;
+}
+
+/* --- ACTIVE PLAN STYLES --- */
+.active-plan-card {
+    background-color: #eef7ff;
+    border: 1px solid #d1e7fd;
+    border-left: 5px solid #6c63ff;
+    border-radius: 8px;
+    padding: 1rem 1.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.plan-name {
+    font-weight: 700;
+    font-size: 1.2rem;
+    color: #3f2b96;
+}
+
+.plan-date {
+    font-size: 0.9rem;
+    color: var(--medium-grey);
+}
+
+/* --- BOOKINGS STYLES --- */
+.bookings-section {
+    background-color: #f8f9fa;
+    padding: 1.5rem 2.5rem;
+    text-align: left;
+}
+
+    .bookings-section h2 {
+        font-family: var(--font-heading);
+        margin: 0 0 1rem 0;
+        font-size: 1.5rem;
+    }
+
+.bookings-list {
+    max-height: 200px;
+    overflow-y: auto;
+    padding-right: 10px; /* For scrollbar */
+}
+
+.booking-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.75rem 0;
+    border-bottom: 1px solid var(--border-color);
+}
+
+    .booking-item:last-child {
+        border-bottom: none;
+    }
+
+.booking-date {
+    font-weight: 600;
+}
+
+.booking-details {
+    color: var(--medium-grey);
+    text-transform: capitalize;
+}
+
+.no-bookings {
+    color: var(--medium-grey);
+    font-style: italic;
+}
+
+
 .profile-footer {
-    background-color: var(--light-grey);
+    background-color: #f8f9fa;
     padding: 1.5rem 2.5rem;
     border-top: 1px solid var(--border-color);
     display: flex;
-    justify-content: center;
+    justify-content: flex-end; /* Align buttons to the right */
     gap: 1rem;
 }
+
+/* ... (Your existing .btn styles for profile page are unchanged) ... */
 
 /* --- IMPROVED BUTTON STYLES --- */
 
