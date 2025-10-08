@@ -5,6 +5,9 @@ const mysql = require('mysql2');
 const cors = require('cors');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+const path = require('path');
+const fs = require('fs');
+const multer = require('multer');
 
 const app = express();
 // Use variables from .env file, with fallbacks
@@ -15,6 +18,13 @@ const JWT_SECRET = process.env.JWT_SECRET;
 // --- MIDDLEWARE ---
 app.use(cors());
 app.use(express.json());
+
+// --- STATIC FILES FOR UPLOADED AVATARS ---
+const uploadsRoot = path.join(__dirname, 'uploads');
+const avatarsDir = path.join(uploadsRoot, 'avatars');
+if (!fs.existsSync(uploadsRoot)) fs.mkdirSync(uploadsRoot);
+if (!fs.existsSync(avatarsDir)) fs.mkdirSync(avatarsDir);
+app.use('/uploads', express.static(uploadsRoot));
 
 // --- MYSQL CONNECTION POOL (IMPROVED & SECURE) ---
 const db = mysql.createPool({
@@ -117,14 +127,14 @@ app.get('/api/profile', authenticateToken, async (req, res) => {
 app.put('/api/profile', authenticateToken, async (req, res) => {
     try {
         const userId = req.user.id;
-        const { name, bio } = req.body;
+        const { name, bio, avatar_url } = req.body;
 
         if (!name) {
             return res.status(400).json({ message: 'Name cannot be empty.' });
         }
 
-        const sql = 'UPDATE users SET name = ?, bio = ? WHERE id = ?';
-        await db.query(sql, [name, bio, userId]);
+        const sql = 'UPDATE users SET name = ?, bio = ?, avatar_url = COALESCE(?, avatar_url) WHERE id = ?';
+        await db.query(sql, [name, bio, avatar_url ?? null, userId]);
         res.status(200).json({ message: 'Profile updated successfully!' });
     } catch (error) {
         res.status(500).json({ message: 'Database or server error.' });
@@ -265,6 +275,31 @@ app.post('/api/contact', async (req, res) => {
         res.status(201).json({ message: 'Message received successfully!', id: result.insertId });
     } catch (error) {
         res.status(500).json({ message: 'Failed to save message.' });
+    }
+});
+
+// --- AVATAR UPLOAD ENDPOINT ---
+const storage = multer.diskStorage({
+    destination: (req, file, cb) => cb(null, avatarsDir),
+    filename: (req, file, cb) => {
+        const ext = path.extname(file.originalname) || '.png';
+        cb(null, `${req.user.id}-${Date.now()}${ext}`);
+    }
+});
+const fileFilter = (req, file, cb) => {
+    if (/^image\/(png|jpe?g|gif|webp)$/i.test(file.mimetype)) cb(null, true);
+    else cb(new Error('Only image uploads are allowed'));
+};
+const upload = multer({ storage, fileFilter, limits: { fileSize: 3 * 1024 * 1024 } });
+
+app.post('/api/profile/avatar', authenticateToken, upload.single('avatar'), async (req, res) => {
+    try {
+        if (!req.file) return res.status(400).json({ message: 'No file uploaded.' });
+        const publicPath = `/uploads/avatars/${req.file.filename}`;
+        await db.query('UPDATE users SET avatar_url = ? WHERE id = ?', [publicPath, req.user.id]);
+        res.status(200).json({ avatar_url: publicPath });
+    } catch (error) {
+        res.status(500).json({ message: 'Failed to upload avatar.' });
     }
 });
 

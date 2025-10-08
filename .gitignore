@@ -2,6 +2,9 @@
 # Keep secrets and credentials out of the repository
 secure.env
 
+# Uploaded files (user avatars, etc.)
+server/uploads/
+
 # Logs
 logs
 *.log

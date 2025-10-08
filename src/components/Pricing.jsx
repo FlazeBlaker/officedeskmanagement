@@ -48,13 +48,17 @@ function Pricing() {
 
     return (
         <section id="pricing" className="section">
-            <h2 className="section-title">
-                Find a Plan That's <span>Right For You</span>
-            </h2>
-            <p className="section-subtitle">
-                Simple, transparent pricing for individuals and teams.
-                <span>Start with our no-commitment free trial.</span>
-            </p>
+            <div className="pricing-header">
+                <span className="pricing-eyebrow">Plans & Pricing</span>
+                <h2 className="pricing-title">
+                    Find a Plan That’s <span className="gradient">Right For You</span>
+                    <span aria-hidden className="accent-underline"></span>
+                </h2>
+                <p className="pricing-subtitle">
+                    Simple, transparent pricing for individuals and teams.
+                    <strong> Start with our no‑commitment free trial.</strong>
+                </p>
+            </div>
             <div className="pricing-grid">
 
                 <PricingCard>

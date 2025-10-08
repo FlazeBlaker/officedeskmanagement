@@ -161,3 +161,83 @@
         transform: translateY(-3px);
         box-shadow: 0 8px 20px rgba(108, 99, 255, 0.3);
     }
+
+/* === PREMIUM TITLE STYLES === */
+.pricing-header {
+    text-align: center;
+    margin: 0 auto 2.5rem auto;
+    max-width: 900px;
+}
+
+.pricing-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #6c63ff;
+    background: linear-gradient(90deg, rgba(108,99,255,0.12), rgba(168,192,255,0.12));
+    border: 1px solid rgba(108,99,255,0.25);
+    padding: 0.35rem 0.7rem;
+    border-radius: 999px;
+    margin-bottom: 0.9rem;
+}
+
+.pricing-title {
+    position: relative;
+    font-family: var(--font-heading);
+    font-weight: 800;
+    font-size: clamp(1.8rem, 2.8vw + 1rem, 3rem);
+    line-height: 1.15;
+    color: var(--dark-charcoal);
+    margin: 0 0 0.75rem 0;
+}
+
+.pricing-title .gradient {
+    background: linear-gradient(90deg, #6c63ff 0%, #a8c0ff 50%, #6c63ff 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    background-size: 200% 100%;
+    animation: shimmer 4s ease-in-out infinite;
+    white-space: nowrap;
+}
+
+/* Accent underline that animates in under the headline */
+.accent-underline {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    bottom: -10px;
+    width: min(480px, 72%);
+    height: 6px;
+    border-radius: 6px;
+    background: linear-gradient(90deg, rgba(108,99,255,0) 0%, rgba(108,99,255,0.9) 20%, rgba(168,192,255,0.9) 50%, rgba(108,99,255,0.9) 80%, rgba(108,99,255,0) 100%);
+    filter: blur(0.3px);
+    transform-origin: center;
+    animation: growUnderline 900ms ease-out 120ms both;
+}
+
+.pricing-subtitle {
+    font-size: clamp(1rem, 0.7vw + 0.9rem, 1.25rem);
+    color: var(--medium-grey);
+    margin: 0.75rem auto 0;
+    max-width: 52ch;
+}
+
+.pricing-subtitle strong {
+    color: #3f2b96;
+}
+
+@keyframes shimmer {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+@keyframes growUnderline {
+    0% { transform: translateX(-50%) scaleX(0); opacity: 0; }
+    100% { transform: translateX(-50%) scaleX(1); opacity: 1; }
+}

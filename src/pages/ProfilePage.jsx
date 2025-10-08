@@ -1,5 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import './ProfilePage.css';
+
+const API_BASE = 'http://localhost:3001';
+const resolveAvatarUrl = (url) => {
+    if (!url) return null;
+    return url.startsWith('/uploads/') ? `${API_BASE}${url}` : url;
+};
 
 function ProfilePage() {
     const [profile, setProfile] = useState(null);
@@ -10,7 +16,11 @@ function ProfilePage() {
 
     // State for editing mode
     const [isEditing, setIsEditing] = useState(false);
-    const [editData, setEditData] = useState({ name: '', bio: '' });
+    const [editData, setEditData] = useState({ name: '', bio: '', avatar_url: '' });
+    const [avatarFile, setAvatarFile] = useState(null);
+    const [avatarPreview, setAvatarPreview] = useState(null);
+    const [avatarLoadFailed, setAvatarLoadFailed] = useState(false);
+    const fileInputRef = useRef(null);
 
     // Fetches all user data (profile, bookings, plan)
     useEffect(() => {
@@ -46,7 +56,8 @@ function ProfilePage() {
                 setProfile(profileData);
                 setBookings(bookingsData);
                 setActivePlan(planData);
-                setEditData({ name: profileData.name, bio: profileData.bio || '' });
+                setEditData({ name: profileData.name, bio: profileData.bio || '', avatar_url: profileData.avatar_url || '' });
+                setAvatarLoadFailed(false);
 
             } catch (err) {
                 setError(err.message);
@@ -66,19 +77,45 @@ function ProfilePage() {
     const handleSave = async () => {
         const token = localStorage.getItem('authToken');
         try {
+            let uploadedUrl = null;
+            if (avatarFile) {
+                const form = new FormData();
+                form.append('avatar', avatarFile);
+                const uploadRes = await fetch('http://localhost:3001/api/profile/avatar', {
+                    method: 'POST',
+                    headers: { 'Authorization': `Bearer ${token}` },
+                    body: form,
+                });
+                if (!uploadRes.ok) throw new Error('Failed to upload avatar.');
+                const uploadData = await uploadRes.json();
+                uploadedUrl = uploadData.avatar_url;
+            }
+
             const response = await fetch('http://localhost:3001/api/profile', {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${token}`
                 },
-                body: JSON.stringify(editData)
+                body: JSON.stringify({
+                    name: editData.name,
+                    bio: editData.bio,
+                    avatar_url: uploadedUrl || editData.avatar_url || null,
+                })
             });
             if (!response.ok) throw new Error('Failed to save profile.');
 
             // Update the local profile state with the new data
-            setProfile(prev => ({ ...prev, name: editData.name, bio: editData.bio }));
-            setIsEditing(false); // Exit editing mode
+            setProfile(prev => ({
+                ...prev,
+                name: editData.name,
+                bio: editData.bio,
+                avatar_url: uploadedUrl || editData.avatar_url || prev.avatar_url,
+            }));
+            setIsEditing(false);
+            setAvatarFile(null);
+            setAvatarPreview(null);
+            setAvatarLoadFailed(false);
         } catch (err) {
             setError(err.message);
         }
@@ -95,7 +132,39 @@ function ProfilePage() {
         <main className="profile-container">
             <div className="profile-card">
                 <div className="profile-header">
-                    <img src={profile.avatar_url} alt={`${profile.name}'s avatar`} className="profile-avatar" />
+                    <div className="profile-avatar-wrapper">
+                        {avatarPreview ? (
+                            <img src={avatarPreview} alt="Avatar preview" className="profile-avatar" />
+                        ) : (profile.avatar_url && !avatarLoadFailed) ? (
+                            <img
+                                src={resolveAvatarUrl(profile.avatar_url)}
+                                alt={`${profile.name}'s avatar`}
+                                className="profile-avatar"
+                                onError={() => setAvatarLoadFailed(true)}
+                            />
+                        ) : (
+                            <div className="profile-avatar-initial">{(profile.name || '?').charAt(0).toUpperCase()}</div>
+                        )}
+                        {isEditing && (
+                            <>
+                                <button className="avatar-edit-btn" onClick={() => fileInputRef.current?.click()}>Change Photo</button>
+                                <input
+                                    type="file"
+                                    accept="image/*"
+                                    ref={fileInputRef}
+                                    style={{ display: 'none' }}
+                                    onChange={(e) => {
+                                        const file = e.target.files?.[0];
+                                        if (file) {
+                                            setAvatarFile(file);
+                                            setAvatarPreview(URL.createObjectURL(file));
+                                            setAvatarLoadFailed(false);
+                                        }
+                                    }}
+                                />
+                            </>
+                        )}
+                    </div>
                     {isEditing ? (
                         <input
                             type="text"
